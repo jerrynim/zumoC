@@ -8,5 +8,5 @@ npm-debug.*
 /build
 /.expo
 /assets
-app.json
-yarn.lock
+/app.json
+/yarn.lock
