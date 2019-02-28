@@ -1,20 +1,60 @@
 import React from "react";
-import { ThemeProvider } from "../../typed-components";
-import theme from "../../theme";
-import AppPresenter from "./AppPresenter";
-import { AppRegistry } from "react-native";
+import { View, Text, Button } from "react-native";
+import { createStackNavigator, createAppContainer } from "react-navigation";
+import { RouteComponentProps } from "react-router";
 
-class App extends React.Component {
+interface IProps extends RouteComponentProps<any> {
+  navigation: any;
+}
+
+class HomeScreen extends React.Component<IProps> {
+  constructor(props: IProps) {
+    super(props);
+  }
   render() {
     return (
-      <React.Fragment>
-        <ThemeProvider theme={theme}>
-          <AppPresenter />
-        </ThemeProvider>
-      </React.Fragment>
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Home Screen</Text>
+        <Button
+          title="Go to Details"
+          onPress={() => this.props.navigation.navigate("Details")}
+        />
+      </View>
     );
   }
 }
 
-export default App;
-AppRegistry.registerComponent("App", () => App);
+class DetailsScreen extends React.Component<IProps> {
+  render() {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+        <Text>Details Screen</Text>
+        <Button
+          title="Go to Details... again"
+          onPress={() => this.props.navigation.push("Details")}
+        />
+        <Button
+          title="Go to Home"
+          onPress={() => this.props.navigation.navigate("Home")}
+        />
+        <Button
+          title="Go back"
+          onPress={() => this.props.navigation.goBack()}
+        />
+      </View>
+    );
+  }
+}
+
+const RootStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Details: DetailsScreen
+  },
+  {
+    initialRouteName: "Home"
+  }
+);
+
+const AppContainer = createAppContainer(RootStack);
+export default AppContainer;
