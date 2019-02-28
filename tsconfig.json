@@ -31,7 +31,7 @@
   "types": ["react", "react-dom", "react-native"],
   "exclude": [
     "node_modules",
-    "node_modules/@types",
+    "/node_modules/@types",
     "build",
     "__tests__",
     "jest.config.js",
