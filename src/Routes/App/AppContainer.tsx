@@ -3,7 +3,8 @@ import {
   createStackNavigator,
   createAppContainer,
   NavigationScreenProp,
-  NavigationRoute
+  NavigationRoute,
+  NavigationScreenProps
 } from "react-navigation";
 import { SafeAreaView, View, Text, Button } from "react-native";
 
@@ -12,20 +13,35 @@ interface IProps {
 }
 
 class HomeScreen extends React.Component<IProps> {
+  static navigationOptions = (navigation: NavigationScreenProps) => {
+    return {
+      headerTitle: (
+        <View>
+          <Button
+            title={"THISWEEK"}
+            onPress={() => navigation.navigation.navigate("Home")}
+          />
+          <Button
+            title={"DISCOVER"}
+            onPress={() => navigation.navigation.navigate("Discover")}
+          />
+        </View>
+      ),
+      headerRight: (
+        <Button
+          title={"➤"}
+          onPress={() => navigation.navigation.navigate("Search")}
+        />
+      )
+    };
+  };
+
   public render() {
     return (
       <SafeAreaView>
         <View>
-          <Text>this is home</Text>
+          <Text>This is home</Text>
         </View>
-        <Button
-          title={"go to Discover"}
-          onPress={() => this.props.navigation.navigate("Discover")}
-        />
-        <Button
-          title={"go to Search"}
-          onPress={() => this.props.navigation.navigate("Search")}
-        />
       </SafeAreaView>
     );
   }
