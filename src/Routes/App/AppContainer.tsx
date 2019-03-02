@@ -1,77 +1,78 @@
 import React from "react";
-import { View, Text, Button } from "react-native";
-import { createStackNavigator, createAppContainer } from "react-navigation";
-import { RouteComponentProps } from "react-router";
+import {
+  createStackNavigator,
+  createAppContainer,
+  NavigationScreenProp,
+  NavigationRoute
+} from "react-navigation";
+import { SafeAreaView, View, Text, Button } from "react-native";
 
-interface IProps extends RouteComponentProps<any> {
-  navigation: any;
+interface IProps {
+  navigation: NavigationScreenProp<NavigationRoute>;
 }
 
 class HomeScreen extends React.Component<IProps> {
-  render() {
+  public render() {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Home Screen</Text>
+      <SafeAreaView>
+        <View>
+          <Text>this is home</Text>
+        </View>
         <Button
-          title="Go to Details"
-          onPress={() => {
-            /* 1. Navigate to the Details route with params */
-            this.props.navigation.navigate("Details", {
-              itemId: 86,
-              otherParam: "anything you want here"
-            });
-          }}
+          title={"go to Discover"}
+          onPress={() => this.props.navigation.navigate("Discover")}
         />
-      </View>
+        <Button
+          title={"go to Search"}
+          onPress={() => this.props.navigation.navigate("Search")}
+        />
+      </SafeAreaView>
     );
   }
 }
 
-class DetailsScreen extends React.Component<IProps> {
-  render() {
-    /* 2. Get the param, provide a fallback value if not available */
-    const { navigation } = this.props;
-    const itemId = navigation.getParam("itemId", "NO-ID");
-    const otherParam = navigation.getParam("otherParam", "some default value");
-
+class DiscoverScreen extends React.Component<IProps> {
+  public render() {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Text>Details Screen</Text>
-        <Text>itemId: {JSON.stringify(itemId)}</Text>
-        <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <SafeAreaView>
+        <View>
+          <Text>this is Discover</Text>
+        </View>
         <Button
-          title="Go to Details... again"
-          onPress={() =>
-            this.props.navigation.push("Details", {
-              itemId: Math.floor(Math.random() * 100)
-            })
-          }
-        />
-        <Button
-          title="Go to Home"
+          title={"go to Home"}
           onPress={() => this.props.navigation.navigate("Home")}
         />
-        <Button
-          title="Go back"
-          onPress={() => this.props.navigation.goBack()}
-        />
-      </View>
+      </SafeAreaView>
     );
   }
 }
-/*Consider a stack navigator with screens A and B. After navigating to A, its componentDidMount is called. When pushing B, its componentDidMount is also called, but A remains mounted on the stack and its componentWillUnmount is therefore not called.
 
-  When going back from B to A, componentWillUnmount of B is called, but componentDidMount of A is not because A remained mounted the whole time.*/
-
-const RootStack = createStackNavigator(
-  {
-    Home: HomeScreen,
-    Details: DetailsScreen
-  },
-  {
-    initialRouteName: "Home"
+class SearchScreen extends React.Component<IProps> {
+  public render() {
+    return (
+      <SafeAreaView>
+        <View>
+          <Text>this is Search</Text>
+        </View>
+        <Button
+          title={"go to Home"}
+          onPress={() => this.props.navigation.navigate("Home")}
+        />
+      </SafeAreaView>
+    );
   }
-);
+}
 
-const AppContainer = createAppContainer(RootStack);
-export default AppContainer;
+const HomeStack = createStackNavigator({
+  Home: { screen: HomeScreen },
+  Discover: { screen: DiscoverScreen },
+  Search: { screen: SearchScreen }
+});
+
+const AppContainer = createAppContainer(HomeStack);
+
+export default class App extends React.Component {
+  render() {
+    return <AppContainer />;
+  }
+}
