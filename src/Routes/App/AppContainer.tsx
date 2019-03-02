@@ -1,18 +1,26 @@
 import React from "react";
 import {
   createStackNavigator,
-  createAppContainer,
   NavigationScreenProp,
   NavigationRoute,
-  NavigationScreenProps
+  NavigationScreenProps,
+  createDrawerNavigator,
+  NavigationActions
 } from "react-navigation";
-import { SafeAreaView, View, Text, Button } from "react-native";
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Button,
+  Dimensions,
+  TouchableOpacity
+} from "react-native";
 
 interface IProps {
-  navigation: NavigationScreenProp<NavigationRoute>;
+  navigation: NavigationScreenProp<any, any>;
 }
 
-class HomeScreen extends React.Component<IProps> {
+class HomeScreen extends React.Component {
   static navigationOptions = (navigation: NavigationScreenProps) => {
     return {
       headerTitle: (
@@ -27,6 +35,12 @@ class HomeScreen extends React.Component<IProps> {
           />
         </View>
       ),
+      headerLeft: (
+        <Button
+          title={"Menu"}
+          onPress={() => navigation.navigation.toggleDrawer()}
+        />
+      ),
       headerRight: (
         <Button
           title={"➤"}
@@ -36,7 +50,7 @@ class HomeScreen extends React.Component<IProps> {
     };
   };
 
-  public render() {
+  render() {
     return (
       <SafeAreaView>
         <View>
@@ -48,7 +62,7 @@ class HomeScreen extends React.Component<IProps> {
 }
 
 class DiscoverScreen extends React.Component<IProps> {
-  public render() {
+  render() {
     return (
       <SafeAreaView>
         <View>
@@ -64,7 +78,7 @@ class DiscoverScreen extends React.Component<IProps> {
 }
 
 class SearchScreen extends React.Component<IProps> {
-  public render() {
+  render() {
     return (
       <SafeAreaView>
         <View>
@@ -80,12 +94,52 @@ class SearchScreen extends React.Component<IProps> {
 }
 
 const HomeStack = createStackNavigator({
-  Home: { screen: HomeScreen },
-  Discover: { screen: DiscoverScreen },
+  Home: {
+    screen: HomeScreen,
+    navigationOptions: ({ navigation }: NavigationScreenProps) => ({
+      title: "Home",
+      headerLeft: (
+        <TouchableOpacity onPress={() => navigation.navigate("DrawerOpen")}>
+          <Text>aaa</Text>
+        </TouchableOpacity>
+      )
+    })
+  },
+  Discover: {
+    screen: DiscoverScreen,
+    navigationOptions: () => ({
+      title: "Discover"
+    })
+  },
   Search: { screen: SearchScreen }
 });
 
-const AppContainer = createAppContainer(HomeStack);
+class Drawer extends React.Component<IProps> {
+  navigateToScreen = (route: string) => () => {
+    const navigateAction = NavigationActions.navigate({
+      routeName: route
+    });
+    this.props.navigation.dispatch(navigateAction);
+  };
+  render() {
+    return (
+      <View>
+        <Text>HI</Text>
+      </View>
+    );
+  }
+}
+const AppContainer = createDrawerNavigator(
+  {
+    Home: {
+      screen: HomeStack
+    }
+  },
+  {
+    contentComponent: Drawer,
+    drawerWidth: Dimensions.get("window").width - 120
+  }
+);
 
 export default class App extends React.Component {
   render() {
