@@ -2,10 +2,8 @@ import React from "react";
 import {
   createStackNavigator,
   NavigationScreenProp,
-  NavigationRoute,
   NavigationScreenProps,
-  createDrawerNavigator,
-  NavigationActions
+  createDrawerNavigator
 } from "react-navigation";
 import {
   SafeAreaView,
@@ -114,21 +112,12 @@ const HomeStack = createStackNavigator({
   Search: { screen: SearchScreen }
 });
 
-class Drawer extends React.Component<IProps> {
-  navigateToScreen = (route: string) => () => {
-    const navigateAction = NavigationActions.navigate({
-      routeName: route
-    });
-    this.props.navigation.dispatch(navigateAction);
-  };
-  render() {
-    return (
-      <View>
-        <Text>HI</Text>
-      </View>
-    );
-  }
-}
+const Drawer: React.SFC<IProps> = () => (
+  <View>
+    <Text>hi</Text>
+  </View>
+);
+
 const AppContainer = createDrawerNavigator(
   {
     Home: {
@@ -136,6 +125,7 @@ const AppContainer = createDrawerNavigator(
     }
   },
   {
+    initialRouteName: "Home",
     contentComponent: Drawer,
     drawerWidth: Dimensions.get("window").width - 120
   }
