@@ -20,7 +20,7 @@ const AppPresenter = createAppContainer(HomeStack);
 
 class AppContainer extends React.Component<IState> {
   public state = {
-    isMenuOpen: false
+    isMenuOpen: true
   };
   render() {
     const { isMenuOpen } = this.state;
@@ -30,6 +30,7 @@ class AppContainer extends React.Component<IState> {
         open={isMenuOpen}
         content={<Menu />}
         openDrawerOffset={100}
+        acceptTap={true}
       >
         <AppPresenter />
       </Drawer>
