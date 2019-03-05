@@ -7,6 +7,7 @@ import {
   TextStyle,
   SafeAreaView
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 const styled = StyleSheet.create<Style>({
   Container: {
@@ -64,11 +65,11 @@ const Menu: React.SFC = () => {
   return (
     <SafeAreaView style={{ height: 1000, backgroundColor: "white" }}>
       <View style={styled.Container}>
-        <View style={{ width: 230, height: 230 }}>
+        <View style={{ width: 250, height: 230 }}>
           <View
             style={{
-              width: 230,
-              height: 230,
+              width: 270,
+              height: 400,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center",
@@ -77,91 +78,96 @@ const Menu: React.SFC = () => {
           >
             <View
               style={{
-                width: 100,
-                height: 100,
-                backgroundColor: "yellow",
+                width: 80,
+                height: 80,
+                backgroundColor: "rgba(0,0,0,0.2)",
                 borderRadius: 50
               }}
             />
-            <Text style={{ height: 25, fontSize: 20, marginTop: 20 }}>Lee</Text>
+            <Text style={{ height: 25, fontSize: 17, marginTop: 20 }}>Lee</Text>
           </View>
         </View>
-        <View style={{ width: 230, height: 350 }}>
+        <View style={{ width: 270, height: 500 }}>
           <View
             style={{
-              width: 230,
-              height: 30,
-              borderBottomColor: "black",
+              width: 270,
+              height: 40,
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
             }}
           >
-            <Text style={{ height: 25 }}>☃︎ MY PAGE</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>☃︎ MY PAGE</Text>
           </View>
           <View
             style={{
-              width: 230,
-              height: 50,
-              borderBottomColor: "light-grey",
+              width: 270,
+              height: 40,
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
             }}
           >
-            <Text>⚲ SEARCH</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>⚲ SEARCH</Text>
           </View>
           <View
             style={{
-              width: 230,
-              height: 50,
-              borderBottomColor: "light-grey",
+              width: 270,
+              height: 40,
+              borderBottomColor: "rgba(0, 0, 0, 0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
             }}
           >
-            <Text>♡ LIKE</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>♡ LIKE</Text>
           </View>
           <View
             style={{
-              width: 230,
-              height: 50,
-              borderBottomColor: "light-grey",
+              width: 270,
+              height: 40,
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
             }}
           >
-            <Text>⚙︎ SETTING</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>⚙︎ SETTING</Text>
           </View>
           <View
             style={{
-              width: 230,
-              height: 50,
-              borderBottomColor: "light-grey",
+              width: 270,
+              height: 40,
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
             }}
           >
-            <Text>✓ NOTICE</Text>
+            <Text style={{ fontSize: 15, fontWeight: "500" }}>✓ NOTICE</Text>
           </View>
           <View
             style={{
-              width: 230,
-              height: 50,
+              paddingTop: 30,
+              padding: 20,
+              width: 270,
+              height: 40,
               flex: 1,
-              flexDirection: "column",
-              justifyContent: "center"
+              flexDirection: "row",
+              justifyContent: "space-between"
             }}
           >
-            <Text>카카오톡으로 앱 추천하기</Text>
+            <Text style={{ fontSize: 16, fontWeight: "400" }}>
+              카카오톡으로 앱 추천하기
+            </Text>
+            <Ionicons size={25} name={"ios-arrow-dropright"} color={"black"} />
           </View>
         </View>
       </View>

@@ -1,25 +1,11 @@
 import React from "react";
-import {
-  SafeAreaView,
-  NavigationScreenProp,
-  NavigationScreenProps
-} from "react-navigation";
-import {
-  View,
-  Button,
-  Text,
-  Animated,
-  Dimensions,
-  StyleSheet
-} from "react-native";
+import { SafeAreaView, NavigationScreenProp } from "react-navigation";
+import { View, Text, Animated, Dimensions, StyleSheet } from "react-native";
 import styled from "styled-components/native";
+import { WEATHERAPI_KEY } from "../../keys";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-const HeadStyle = styled.View`
-  display: flex;
-  flex-direction: row;
-`;
 const Weather = styled.View`
   display: flex;
   flex-direction: row;
@@ -38,41 +24,6 @@ interface IState {
 }
 
 class HomeScreen extends React.Component<IProps, IState> {
-  static navigationOptions = (navigation: NavigationScreenProps) => {
-    return {
-      headerTitle: (
-        <HeadStyle>
-          <View style={{ backgroundColor: "powderblue" }}>
-            <Button
-              title={"THISWEEK"}
-              color="black"
-              onPress={() => navigation.navigation.navigate("Home")}
-            />
-          </View>
-          <View style={{ backgroundColor: "skyblue" }}>
-            <Button
-              title={"DISCOVER"}
-              color="black"
-              onPress={() => navigation.navigation.navigate("Discover")}
-            />
-          </View>
-        </HeadStyle>
-      ),
-      headerLeft: (
-        <Button
-          title={"Menu"}
-          onPress={() => console.log("let's change AppPresenter's isMenuOpen")}
-        />
-      ),
-      headerRight: (
-        <Button
-          title={"➤"}
-          onPress={() => navigation.navigation.navigate("Search")}
-        />
-      )
-    };
-  };
-
   // componentDidMount() {
   //   this.props.navigation.setParams({ toggleMenu: this._toggleMenu });
   // }
@@ -80,7 +31,34 @@ class HomeScreen extends React.Component<IProps, IState> {
   // _toggleMenu = () => {
   //   this.setState({ isMenuOpen: !this.state.isMenuOpen });
   // };
+  componentDidMount() {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const currentWeather = this.getWeather(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+        console.log(position.coords.latitude, position.coords.longitude);
+        console.log(currentWeather);
+      },
+      (error) => console.log(error)
+    );
+    console.log(this.getDate());
+  }
 
+  getDate = () => {
+    const now = Date.now();
+    return now;
+  };
+  getWeather = (lat, lng) => {
+    const weather = fetch(
+      `api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${WEATHERAPI_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => json);
+    return weather;
+  };
+  public Today = Date.now();
   render() {
     return (
       <SafeAreaView
@@ -89,7 +67,9 @@ class HomeScreen extends React.Component<IProps, IState> {
         }}
       >
         <Weather>
-          <Text style={{ color: "grey", height: 30 }}>02.25 - 03.03</Text>
+          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
+            02.25 - 03.03
+          </Text>
         </Weather>
         <Animated.ScrollView
           scrollEventThrottle={16}

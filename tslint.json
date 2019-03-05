@@ -19,7 +19,6 @@
     "no-debugger": true,
     "no-duplicate-variable": true,
     "no-eval": true,
-    "no-null-keyword": true,
     "no-shadowed-variable": true,
     "no-string-literal": true,
     "no-switch-case-fall-through": true,

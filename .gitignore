@@ -10,3 +10,5 @@ npm-debug.*
 /assets
 /app.json
 /yarn.lock
+/src/keys
+/src/keys.ts

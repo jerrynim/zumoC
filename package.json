@@ -20,6 +20,8 @@
     "testWithCoverage": "jest --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html"
   },
   "dependencies": {
+    "@expo/vector-icons": "^9.0.0",
+    "@types/": "expo/vector-icons",
     "@types/react-helmet": "^5.0.8",
     "@types/react-native-drawer": "^2.5.2",
     "@types/react-native-linear-gradient": "^2.4.0",
