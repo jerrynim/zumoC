@@ -20,7 +20,6 @@
     "testWithCoverage": "jest --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html"
   },
   "dependencies": {
-    "@expo/vector-icons": "^9.0.0",
     "@types/": "expo/vector-icons",
     "@types/axios": "^0.14.0",
     "@types/datejs": "^0.0.30",
