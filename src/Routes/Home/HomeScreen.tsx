@@ -4,6 +4,7 @@ import { View, Text, Animated, Dimensions, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { WEATHERAPI_KEY } from "../../keys";
 import { reverseGeoCode } from "../../utils";
+import moment from "moment";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -21,18 +22,30 @@ interface IProps {
 }
 
 interface IState {
+  Week: string;
   Date: string;
   temperature: number;
   weather: string;
   GeoName: string;
+  WeekSchedule: Schedule[];
+}
+
+interface Schedule {
+  id: number;
+  day: string;
+  dayName: string;
+  temp: number;
+  weather: string;
 }
 
 class HomeScreen extends React.Component<IProps, IState> {
   public state = {
+    Week: "",
     Date: "",
     temperature: 0,
     weather: "",
-    GeoName: ""
+    GeoName: "",
+    WeekSchedule: []
   };
   // componentDidMount() {
   //   this.props.navigation.setParams({ toggleMenu: this._toggleMenu });
@@ -54,17 +67,60 @@ class HomeScreen extends React.Component<IProps, IState> {
       (error) => console.log(error)
     );
     this.getDate();
+    this.getSchedule();
   }
 
   getDate = async () => {
-    const currentTime = await new Date();
-    const Month = currentTime.getDay();
-    const Day = currentTime.getDate();
-    const Today = `${Month}.${Day}`;
+    const today = moment().format("L");
+    const today_1 = today.replace("/2019", "");
+    const today_2 = today_1.replace("/", "-");
+
+    const sevenDay = moment()
+      .add(7, "days")
+      .calendar();
+    const sevenDay_1 = sevenDay.replace("/2019", "");
+    const sevenDay_2 = sevenDay_1.replace("/", "-");
+
     this.setState({
-      Date: Today
+      Date: today_2,
+      Week: sevenDay_2
     });
   };
+
+  getSchedule = async () => {
+    let WeekScheduleIN: Schedule[] = [];
+
+    for (let i = 0; i < 7; i++) {
+      WeekScheduleIN.push({
+        id: i,
+        day: moment()
+          .add(i, "days")
+          .format("L")
+          .replace("/2019", ""),
+        dayName: moment()
+          .add(i, "days")
+          .format("ddd"),
+        temp: 0,
+        weather: ""
+      });
+    }
+
+    await fetch(
+      `http://api.openweathermap.org/data/2.5/forecast?id=1835847&cnt=7&APPID=${WEATHERAPI_KEY}`
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        for (let i = 0; i < WeekScheduleIN.length; i++) {
+          WeekScheduleIN[i].temp = Math.floor(json.list[i].main.temp - 273.15);
+          WeekScheduleIN[i].weather = json.list[i].weather[0].main;
+        }
+      });
+    this.setState({
+      WeekSchedule: WeekScheduleIN
+    });
+    console.log(this.state.WeekSchedule);
+  };
+
   getWeather = async (lat: number, lng: number) => {
     await fetch(
       `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${WEATHERAPI_KEY}`
@@ -73,13 +129,13 @@ class HomeScreen extends React.Component<IProps, IState> {
       .then((json) =>
         this.setState({
           weather: json.weather[0].main,
-          temperature: Math.floor(json.main.temp / 10)
+          temperature: json.main.temp - 273.15
         })
       );
   };
 
   render() {
-    const { temperature, weather, GeoName, Date } = this.state;
+    const { Date, Week } = this.state;
     return (
       <SafeAreaView
         forceInset={{
@@ -87,18 +143,17 @@ class HomeScreen extends React.Component<IProps, IState> {
         }}
       >
         <Weather>
-          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
-            {Date}
+          <Text
+            style={{
+              color: "black",
+              height: 30,
+              fontSize: 20,
+              textAlign: "center"
+            }}
+          >
+            {Date} - {Week}
           </Text>
-          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
-            {temperature}
-          </Text>
-          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
-            {weather}
-          </Text>
-          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
-            {GeoName}
-          </Text>
+          <View style={{ width: SCREEN_WIDTH, height: 150 }} />
         </Weather>
         <Animated.ScrollView
           scrollEventThrottle={16}

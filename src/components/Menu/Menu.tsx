@@ -1,76 +1,18 @@
 import React from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  ViewStyle,
-  TextStyle,
-  SafeAreaView,
-  Dimensions
-} from "react-native";
+import { Text, View, SafeAreaView, Dimensions } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
+const MENU_WIDTH = Dimensions.get("window").width - 100;
 const SCREEN_HEIGHT = Dimensions.get("window").height;
-const styled = StyleSheet.create<Style>({
-  Container: {
-    marginLeft: 20,
-    marginRight: 20,
-    backgroundColor: "white"
-  },
-  Header: {
-    height: 230,
-    width: 230,
-    backgroundColor: "yellow",
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "stretch"
-  },
-  ProfilePhoto: {
-    height: 40,
-    width: 40,
-    backgroundColor: "blue"
-  },
-  UserName: {
-    height: 30,
-    fontSize: 15
-  },
-  Lists: {
-    display: "flex",
-    marginTop: 10
-  },
-  List: {
-    height: 100,
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
-    opacity: 90,
-    justifyContent: "center"
-  },
-  Share: {
-    height: 100
-  },
-  Profile: {}
-});
 
-interface Style {
-  Container: ViewStyle;
-  Header: ViewStyle;
-  ProfilePhoto: ViewStyle;
-  UserName: TextStyle;
-  Lists: ViewStyle;
-  List: ViewStyle;
-  Share: ViewStyle;
-  Profile: ViewStyle;
-}
 const Menu: React.SFC = () => {
   return (
     <SafeAreaView style={{ height: SCREEN_HEIGHT, backgroundColor: "white" }}>
-      <View style={styled.Container}>
-        <View style={{ width: 250, height: 230 }}>
+      <View style={{ width: MENU_WIDTH }}>
+        <View style={{ width: MENU_WIDTH, height: 230 }}>
           <View
             style={{
-              width: 270,
+              width: MENU_WIDTH,
               height: 400,
               flex: 1,
               flexDirection: "column",
@@ -89,11 +31,11 @@ const Menu: React.SFC = () => {
             <Text style={{ height: 25, fontSize: 17, marginTop: 20 }}>Lee</Text>
           </View>
         </View>
-        <View style={{ width: 270, height: 500 }}>
+        <View style={{ width: MENU_WIDTH, height: 500 }}>
           <View
             style={{
-              width: 270,
-              height: 40,
+              marginLeft: 20,
+              marginRight: 20,
               borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
@@ -105,8 +47,8 @@ const Menu: React.SFC = () => {
           </View>
           <View
             style={{
-              width: 270,
-              height: 40,
+              marginLeft: 20,
+              marginRight: 20,
               borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
@@ -118,9 +60,9 @@ const Menu: React.SFC = () => {
           </View>
           <View
             style={{
-              width: 270,
-              height: 40,
-              borderBottomColor: "rgba(0, 0, 0, 0.3)",
+              marginLeft: 20,
+              marginRight: 20,
+              borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
               flexDirection: "column",
@@ -131,8 +73,8 @@ const Menu: React.SFC = () => {
           </View>
           <View
             style={{
-              width: 270,
-              height: 40,
+              marginLeft: 20,
+              marginRight: 20,
               borderBottomColor: "rgba(0,0,0,0.3)",
               borderBottomWidth: 1,
               flex: 1,
@@ -144,10 +86,8 @@ const Menu: React.SFC = () => {
           </View>
           <View
             style={{
-              width: 270,
-              height: 40,
-              borderBottomColor: "rgba(0,0,0,0.3)",
-              borderBottomWidth: 1,
+              marginLeft: 20,
+              marginRight: 20,
               flex: 1,
               flexDirection: "column",
               justifyContent: "center"
@@ -158,18 +98,24 @@ const Menu: React.SFC = () => {
           <View
             style={{
               paddingTop: 30,
-              padding: 20,
-              width: 270,
+              paddingLeft: 20,
+              paddingRight: 20,
               height: 40,
               flex: 1,
               flexDirection: "row",
-              justifyContent: "space-between"
+              justifyContent: "space-between",
+              borderTopColor: "rgba(0,0,0,0.3)",
+              borderTopWidth: 1
             }}
           >
             <Text style={{ fontSize: 16, fontWeight: "400" }}>
               카카오톡으로 앱 추천하기
             </Text>
-            <Ionicons size={25} name={"ios-arrow-dropright"} color={"black"} />
+            <Ionicons
+              size={25}
+              name={"ios-arrow-dropright"}
+              color={"rgba(0,0,0,0.5)"}
+            />
           </View>
         </View>
       </View>
