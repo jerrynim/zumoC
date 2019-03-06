@@ -5,10 +5,13 @@ import {
   View,
   ViewStyle,
   TextStyle,
-  SafeAreaView
+  SafeAreaView,
+  Dimensions
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
+const SCREEN_WIDTH = Dimensions.get("window").width;
+const SCREEN_HEIGHT = Dimensions.get("window").height;
 const styled = StyleSheet.create<Style>({
   Container: {
     marginLeft: 20,
@@ -60,10 +63,9 @@ interface Style {
   Share: ViewStyle;
   Profile: ViewStyle;
 }
-
 const Menu: React.SFC = () => {
   return (
-    <SafeAreaView style={{ height: 1000, backgroundColor: "white" }}>
+    <SafeAreaView style={{ height: SCREEN_HEIGHT, backgroundColor: "white" }}>
       <View style={styled.Container}>
         <View style={{ width: 250, height: 230 }}>
           <View

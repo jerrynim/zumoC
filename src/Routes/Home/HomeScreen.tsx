@@ -3,16 +3,17 @@ import { SafeAreaView, NavigationScreenProp } from "react-navigation";
 import { View, Text, Animated, Dimensions, StyleSheet } from "react-native";
 import styled from "styled-components/native";
 import { WEATHERAPI_KEY } from "../../keys";
+import { reverseGeoCode } from "../../utils";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 const Weather = styled.View`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-content: center;
   margin-top: 20px;
   margin-bottom: 50px;
+  text-align: center;
 `;
 
 interface IProps {
@@ -20,10 +21,19 @@ interface IProps {
 }
 
 interface IState {
-  isMenuOpen: boolean;
+  Date: string;
+  temperature: number;
+  weather: string;
+  GeoName: string;
 }
 
 class HomeScreen extends React.Component<IProps, IState> {
+  public state = {
+    Date: "",
+    temperature: 0,
+    weather: "",
+    GeoName: ""
+  };
   // componentDidMount() {
   //   this.props.navigation.setParams({ toggleMenu: this._toggleMenu });
   // }
@@ -33,33 +43,43 @@ class HomeScreen extends React.Component<IProps, IState> {
   // };
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const currentWeather = this.getWeather(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-        console.log(position.coords.latitude, position.coords.longitude);
-        console.log(currentWeather);
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const GeoName = await reverseGeoCode(latitude, longitude);
+        this.getWeather(latitude, longitude);
+        this.setState({
+          GeoName: GeoName
+        });
       },
       (error) => console.log(error)
     );
-    console.log(this.getDate());
+    this.getDate();
   }
 
-  getDate = () => {
-    const now = Date.now();
-    return now;
+  getDate = async () => {
+    const currentTime = await new Date();
+    const Month = currentTime.getDay();
+    const Day = currentTime.getDate();
+    const Today = `${Month}.${Day}`;
+    this.setState({
+      Date: Today
+    });
   };
-  getWeather = (lat, lng) => {
-    const weather = fetch(
-      `api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${WEATHERAPI_KEY}`
+  getWeather = async (lat: number, lng: number) => {
+    await fetch(
+      `http://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&APPID=${WEATHERAPI_KEY}`
     )
       .then((res) => res.json())
-      .then((json) => json);
-    return weather;
+      .then((json) =>
+        this.setState({
+          weather: json.weather[0].main,
+          temperature: Math.floor(json.main.temp / 10)
+        })
+      );
   };
-  public Today = Date.now();
+
   render() {
+    const { temperature, weather, GeoName, Date } = this.state;
     return (
       <SafeAreaView
         forceInset={{
@@ -68,7 +88,16 @@ class HomeScreen extends React.Component<IProps, IState> {
       >
         <Weather>
           <Text style={{ color: "black", height: 30, fontSize: 17 }}>
-            02.25 - 03.03
+            {Date}
+          </Text>
+          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
+            {temperature}
+          </Text>
+          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
+            {weather}
+          </Text>
+          <Text style={{ color: "black", height: 30, fontSize: 17 }}>
+            {GeoName}
           </Text>
         </Weather>
         <Animated.ScrollView
