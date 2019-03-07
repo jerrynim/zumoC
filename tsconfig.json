@@ -31,7 +31,7 @@
     "src/**/*.tsx",
     "node_modules/typescript/lib/lib.es6.d.ts"
   ],
-  "types": ["react", "react-dom", "react-native"],
+  "types": ["react", "react-dom", "react-native", "font", "fonts"],
   "exclude": [
     "node_modules",
     "build",

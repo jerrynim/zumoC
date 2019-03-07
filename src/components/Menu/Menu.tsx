@@ -31,7 +31,7 @@ const Menu: React.SFC = () => {
             <Text style={{ height: 25, fontSize: 17, marginTop: 20 }}>Lee</Text>
           </View>
         </View>
-        <View style={{ width: MENU_WIDTH, height: 500 }}>
+        <View style={{ width: MENU_WIDTH, height: 400 }}>
           <View
             style={{
               marginLeft: 20,

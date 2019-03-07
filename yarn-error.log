@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.13.0/libexec/bin/yarn.js add Animated @types/Animated
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.13.0/libexec/bin/yarn.js add @types/fonts
 
 PATH: 
   /Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Users/lee/.npm-global/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/Postgres.app/Contents/Versions/latest/bin:/Library/Frameworks/Python.framework/Versions/3.7/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Users/lee/.npm-global/bin
@@ -8,23 +8,23 @@ Yarn version:
   1.13.0
 
 Node version: 
-  10.13.0
+  11.10.1
 
 Platform: 
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/Animated: Not found
+  Error: https://registry.yarnpkg.com/@types%2ffonts: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.13.0/libexec/lib/cli.js:66255:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.13.0/libexec/lib/cli.js:129397:22)
-      at Request.emit (events.js:182:13)
+      at Request.emit (events.js:197:13)
       at Request.<anonymous> (/usr/local/Cellar/yarn/1.13.0/libexec/lib/cli.js:130369:10)
-      at Request.emit (events.js:182:13)
+      at Request.emit (events.js:197:13)
       at IncomingMessage.<anonymous> (/usr/local/Cellar/yarn/1.13.0/libexec/lib/cli.js:130291:12)
-      at Object.onceWrapper (events.js:273:13)
-      at IncomingMessage.emit (events.js:187:15)
-      at endReadableNT (_stream_readable.js:1094:12)
-      at process._tickCallback (internal/process/next_tick.js:63:19)
+      at Object.onceWrapper (events.js:285:13)
+      at IncomingMessage.emit (events.js:202:15)
+      at endReadableNT (_stream_readable.js:1129:12)
+      at processTicksAndRejections (internal/process/next_tick.js:76:17)
 
 npm manifest: 
   {
@@ -49,19 +49,31 @@ npm manifest:
       "testWithCoverage": "jest --updateSnapshot --watch --coverage && open ./coverage/lcov-report/index.html"
     },
     "dependencies": {
+      "@types/": "expo/vector-icons",
+      "@types/axios": "^0.14.0",
+      "@types/datejs": "^0.0.30",
+      "@types/moment": "^2.13.0",
       "@types/react-helmet": "^5.0.8",
       "@types/react-native-drawer": "^2.5.2",
+      "@types/react-native-linear-gradient": "^2.4.0",
+      "@types/react-native-snap-carousel": "^3.7.1",
       "@types/react-navigation": "^3.0.4",
       "@types/react-router-dom": "^4.3.1",
       "@types/react-sidebar": "^3.0.0",
       "@types/styled-components": "^4.1.11",
+      "axios": "^0.18.0",
+      "datejs": "^1.0.0-rc3",
       "expo": "^32.0.0",
+      "fonts": "^0.0.2",
+      "moment": "^2.24.0",
       "react": "16.5.0",
       "react-helmet": "^5.2.0",
       "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
       "react-native-drawer": "^2.5.1",
+      "react-native-linear-gradient": "^2.5.3",
       "react-native-router-flux": "^4.0.6",
       "react-native-sidebar": "^0.3.0",
+      "react-native-snap-carousel": "^3.7.5",
       "react-navigation": "^3.3.2",
       "react-router-dom": "^4.3.1",
       "react-sidebar": "^3.0.2",
@@ -778,6 +790,25 @@ Lockfile:
       react-native-safe-area-view "^0.13.0"
       react-native-screens "^1.0.0 || ^1.0.0-alpha"
   
+  "@types/@expo/vector-icons":
+    version "9.0.0"
+    resolved "https://codeload.github.com/expo/vector-icons/tar.gz/f60615e81649fbf94dbdbbd9adb0bd10418ecd76"
+    dependencies:
+      lodash "^4.17.4"
+      react-native-vector-icons "6.0.0"
+  
+  "@types/axios@^0.14.0":
+    version "0.14.0"
+    resolved "https://registry.yarnpkg.com/@types/axios/-/axios-0.14.0.tgz#ec2300fbe7d7dddd7eb9d3abf87999964cafce46"
+    integrity sha1-7CMA++fX3d1+udOr+HmZlkyvzkY=
+    dependencies:
+      axios "*"
+  
+  "@types/datejs@^0.0.30":
+    version "0.0.30"
+    resolved "https://registry.yarnpkg.com/@types/datejs/-/datejs-0.0.30.tgz#590c625c8a962b253f4b8059f96891c957d30bde"
+    integrity sha512-UM5Nf0spXBPoT0NXJvkLyTAyRKTVNF5n8eSQoo1XA4qNAFa7lIC48O0JK4nkzIrWi9f2TmJUvxP5G1yrjGRVHQ==
+  
   "@types/fbemitter@^2.0.32":
     version "2.0.32"
     resolved "https://registry.yarnpkg.com/@types/fbemitter/-/fbemitter-2.0.32.tgz#8ed204da0f54e9c8eaec31b1eec91e25132d082c"
@@ -817,6 +848,13 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.121.tgz#9327e20d49b95fc2bf983fc2f045b2c6effc80b9"
     integrity sha512-ORj7IBWj13iYufXt/VXrCNMbUuCTJfhzme5kx9U/UtcIPdJYuvPDUAlHlbNhz/8lKCLy9XGIZnGrqXOtQbPGoQ==
   
+  "@types/moment@^2.13.0":
+    version "2.13.0"
+    resolved "https://registry.yarnpkg.com/@types/moment/-/moment-2.13.0.tgz#604ebd189bc3bc34a1548689404e61a2a4aac896"
+    integrity sha1-YE69GJvDvDShVIaJQE5hoqSqyJY=
+    dependencies:
+      moment "*"
+  
   "@types/prop-types@*":
     version "15.5.9"
     resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.5.9.tgz#f2d14df87b0739041bc53a7d75e3d77d726a3ec0"
@@ -845,6 +883,21 @@ Lockfile:
     version "2.5.2"
     resolved "https://registry.yarnpkg.com/@types/react-native-drawer/-/react-native-drawer-2.5.2.tgz#b33d3bf7a64fb95c29e3811a3fae1e64ea45a005"
     integrity sha512-G1WQV2jcVZVpk4/XDsqPKv9lejWNT/KcUfUQn2hY0/eXdnk25b4tNkUSE9zPhClAHK8yTx7W4lAHmZntngSnUA==
+    dependencies:
+      "@types/react" "*"
+      "@types/react-native" "*"
+  
+  "@types/react-native-linear-gradient@^2.4.0":
+    version "2.4.0"
+    resolved "https://registry.yarnpkg.com/@types/react-native-linear-gradient/-/react-native-linear-gradient-2.4.0.tgz#9c223f8aef2b17f18902518dabf1faeccfe4f7d4"
+    integrity sha512-4fLf0oo4zEbfGPo7rprezBdyy490eyTpl4cogWR8i9CDJzlsAEpmfkjVx8BpgOOF/RNfpa1XgFiSABDqtIi5/Q==
+    dependencies:
+      react-native-linear-gradient "*"
+  
+  "@types/react-native-snap-carousel@^3.7.1":
+    version "3.7.1"
+    resolved "https://registry.yarnpkg.com/@types/react-native-snap-carousel/-/react-native-snap-carousel-3.7.1.tgz#26222d5d23cf1971f40c6b3ae71acdf709589f77"
+    integrity sha512-x45p/1OEMZ+XIURCrPDMQmSSnAmrVpEoeH0JePaH6msWWudFeWo+54IFlTSLOcQBW8nThXdeTfAPG058D684hQ==
     dependencies:
       "@types/react" "*"
       "@types/react-native" "*"
@@ -1242,6 +1295,14 @@ Lockfile:
     version "1.8.0"
     resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.8.0.tgz#f0e003d9ca9e7f59c7a508945d7b2ef9a04a542f"
     integrity sha512-ReZxvNHIOv88FlT7rxcXIIC0fPt4KZqZbOlivyWtXLt8ESx84zd3kMC6iK5jVeS2qt+g7ftS7ye4fi06X5rtRQ==
+  
+  axios@*, axios@^0.18.0:
+    version "0.18.0"
+    resolved "https://registry.yarnpkg.com/axios/-/axios-0.18.0.tgz#32d53e4851efdc0a11993b6cd000789d70c05102"
+    integrity sha1-MtU+SFHv3AoRmTts0AB4nXDAUQI=
+    dependencies:
+      follow-redirects "^1.3.0"
+      is-buffer "^1.1.5"
   
   babel-code-frame@^6.22.0, babel-code-frame@^6.26.0:
     version "6.26.0"
@@ -2364,12 +2425,24 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-1.30.1.tgz#2e71bf0b119153dbb4cc4e88d9ea5acfb50dc05c"
     integrity sha512-hBSVCvSmWC+QypYObzwGOd9wqdDpOt+0wl0KbU+R+uuZBS1jN8VsD1ss3irQDknRj5NvxiTF6oj/nDRnN/UQNw==
   
+  datejs@^1.0.0-rc3:
+    version "1.0.0-rc3"
+    resolved "https://registry.yarnpkg.com/datejs/-/datejs-1.0.0-rc3.tgz#bffa1efedefeb41fdd8a242af55afa01fb58de57"
+    integrity sha1-v/oe/t7+tB/diiQq9Vr6AftY3lc=
+  
   debug@2.6.9, debug@^2.1.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.8, debug@^2.6.9:
     version "2.6.9"
     resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
     integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
     dependencies:
       ms "2.0.0"
+  
+  debug@^3.2.6:
+    version "3.2.6"
+    resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
+    integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
+    dependencies:
+      ms "^2.1.1"
   
   debug@^4.1.0, debug@^4.1.1:
     version "4.1.1"
@@ -3329,6 +3402,18 @@ Lockfile:
     integrity sha512-1yD6RmLI1XBfxugvORwlck6f75tYL+iR0jqwsOrOxMZyGYqUuDhJ0l4AXdO1iX/FTs9cBAMEk1gWSEx1kSbylg==
     dependencies:
       locate-path "^3.0.0"
+  
+  follow-redirects@^1.3.0:
+    version "1.7.0"
+    resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.7.0.tgz#489ebc198dc0e7f64167bd23b03c4c19b5784c76"
+    integrity sha512-m/pZQy4Gj287eNy94nivy5wchN3Kp+Q5WgUPNy5lJSZ3sgkVKSYV/ZChMAQVIgx1SqfZ2zBZtPA2YlXIWxxJOQ==
+    dependencies:
+      debug "^3.2.6"
+  
+  fonts@^0.0.2:
+    version "0.0.2"
+    resolved "https://registry.yarnpkg.com/fonts/-/fonts-0.0.2.tgz#fa5e5a92534a9868b99184ac92e45f8e6a684776"
+    integrity sha1-+l5aklNKmGi5kYSskuRfjmpoR3Y=
   
   for-in@^1.0.1, for-in@^1.0.2:
     version "1.0.2"
@@ -5303,7 +5388,7 @@ Lockfile:
     dependencies:
       moment ">= 2.9.0"
   
-  "moment@>= 2.9.0", moment@^2.22.2:
+  moment@*, "moment@>= 2.9.0", moment@^2.22.2, moment@^2.24.0:
     version "2.24.0"
     resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
     integrity sha512-bV7f+6l2QigeBBZSM/6yTNq4P2fNpSWj/0e7jQcy87A8e7o2nAfP/34/2ky5Vw4B9S446EtIhodAzkFCcR4dQg==
@@ -6110,6 +6195,14 @@ Lockfile:
       minimist "^1.2.0"
       strip-json-comments "~2.0.1"
   
+  react-addons-shallow-compare@15.6.2:
+    version "15.6.2"
+    resolved "https://registry.yarnpkg.com/react-addons-shallow-compare/-/react-addons-shallow-compare-15.6.2.tgz#198a00b91fc37623db64a28fd17b596ba362702f"
+    integrity sha1-GYoAuR/DdiPbZKKP0XtZa6NicC8=
+    dependencies:
+      fbjs "^0.8.4"
+      object-assign "^4.1.0"
+  
   react-clone-referenced-element@^1.0.1:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/react-clone-referenced-element/-/react-clone-referenced-element-1.1.0.tgz#9cdda7f2aeb54fea791f3ab8c6ab96c7a77d0158"
@@ -6196,6 +6289,11 @@ Lockfile:
       invariant "^2.2.2"
       prop-types "^15.5.10"
   
+  react-native-linear-gradient@*, react-native-linear-gradient@^2.5.3:
+    version "2.5.3"
+    resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.3.tgz#d90cf19a13fcccfa8bb32025ac40a15ae1b49e99"
+    integrity sha512-XdusrOXXlkI+yQpUW7YLeiq9cZiBwkvQX4XEkHPVrJ9H47gsKmdgBwObkZBzBQUP0dKK/Sg6aVpETEis4w43bQ==
+  
   react-native-maps@expo/react-native-maps#v0.22.1-exp.0:
     version "0.22.1"
     resolved "https://codeload.github.com/expo/react-native-maps/tar.gz/e6f98ff7272e5d0a7fe974a41f28593af2d77bb2"
@@ -6246,6 +6344,14 @@ Lockfile:
     version "0.3.0"
     resolved "https://registry.yarnpkg.com/react-native-sidebar/-/react-native-sidebar-0.3.0.tgz#0d78c5a08b8d7ade89ff46bf22090475c6442cc3"
     integrity sha1-DXjFoIuNet6J/0a/IgkEdcZELMM=
+  
+  react-native-snap-carousel@^3.7.5:
+    version "3.7.5"
+    resolved "https://registry.yarnpkg.com/react-native-snap-carousel/-/react-native-snap-carousel-3.7.5.tgz#7172456d40ab9161523055eb302f9b03b244240a"
+    integrity sha512-t0/wkjA4Doehv3QTcmzO56G7paGtYsvJgw9XrFI7GCDLK7MrHTiN22ROuJOxMy61nPetyjDAS0Qa3XMl8K7rVQ==
+    dependencies:
+      prop-types "^15.6.1"
+      react-addons-shallow-compare "15.6.2"
   
   react-native-svg@8.0.10:
     version "8.0.10"
