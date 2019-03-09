@@ -9,7 +9,7 @@ import HomeScreen from "../Home";
 import DiscoverScreen from "../Discover/DiscoverScreen";
 import SearchScreen from "../Search/SearchScreen";
 import Menu from "../../components/Menu";
-import { TouchableOpacity, View, Text, Button } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 // tslint:disable-next-line
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
@@ -21,6 +21,7 @@ interface IState {
 const HeadStyle = styled.View`
   display: flex;
   flex-direction: row;
+  height: 40;
 `;
 
 const HomeStack = createStackNavigator(
@@ -48,7 +49,7 @@ const HomeStack = createStackNavigator(
             >
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 14,
                   marginTop: 7,
                   fontWeight: "700",
                   color: `${hcolor}`,
@@ -63,7 +64,7 @@ const HomeStack = createStackNavigator(
             >
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 14,
                   marginTop: 7,
                   fontWeight: "700",
                   color: `${dcolor}`,
@@ -77,10 +78,14 @@ const HomeStack = createStackNavigator(
         ),
         headerLeft: null,
         headerRight: (
-          <Button
-            title={"➤"}
-            onPress={() => navigation.navigation.navigate("Search")}
-          />
+          <View style={{ marginRight: 10, marginBottom: 10 }}>
+            <Ionicons
+              name={"ios-search"}
+              size={"30"}
+              color={"rgba(0,0,0,0.7)"}
+              onPress={() => navigation.navigation.navigate("Search")}
+            />
+          </View>
         )
       };
     }

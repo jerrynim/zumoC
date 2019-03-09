@@ -36,6 +36,7 @@ interface IState {
   weather: string;
   GeoName: string;
   WeekSchedule: Schedule[];
+  airPollution: number;
 }
 
 interface Schedule {
@@ -53,6 +54,7 @@ class HomeScreen extends React.Component<IProps, IState> {
     temperature: 0,
     weather: "",
     GeoName: "",
+    airPollution: 0,
     WeekSchedule: [{ id: 0, day: "", dayName: "", temp: 0, weather: "" }]
   };
   // componentDidMount() {
@@ -68,6 +70,7 @@ class HomeScreen extends React.Component<IProps, IState> {
         const { latitude, longitude } = position.coords;
         const GeoName = await reverseGeoCode(latitude, longitude);
         this.getWeather(latitude, longitude);
+        this.getAirPolution(latitude, longitude);
         this.setState({
           GeoName: GeoName
         });
@@ -143,9 +146,37 @@ class HomeScreen extends React.Component<IProps, IState> {
 
   getAirPolution = async (lat, lng) => {
     await fetch(
-      `
-    api.airvisual.com/v2/nearest_city?lat={${lat}}&lon={${lng}}&key=${AIRVISUAL_KEY}`.then()
-    );
+      `http://api.airvisual.com/v2/nearest_city?lat={${lat}}&lon={${lng}}&key=${AIRVISUAL_KEY}`
+    )
+      .then((response) => response.json())
+      .then((json) =>
+        this.setState({
+          airPollution: json.data.current.pollution.aqius
+        })
+      );
+  };
+
+  airPoullutionView = () => {
+    const { airPollution } = this.state;
+    if (airPollution <= 50) {
+      return (
+        <Text style={{ textAlign: "center" }}>
+          미세먼지 지수: {airPollution} 좋음
+        </Text>
+      );
+    } else if (airPollution <= 100) {
+      return (
+        <Text style={{ textAlign: "center" }}>
+          미세먼지 지수: {airPollution} 나쁨
+        </Text>
+      );
+    } else {
+      return (
+        <Text style={{ textAlign: "center" }}>
+          미세먼지 지수: {airPollution} 매우나쁨
+        </Text>
+      );
+    }
   };
 
   render() {
@@ -179,10 +210,9 @@ class HomeScreen extends React.Component<IProps, IState> {
           <View
             style={{
               width: SCREEN_WIDTH,
-              height: 100,
+              height: 70,
               paddingLeft: 20,
               paddingRight: 20,
-              paddingBottom: 30,
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center"
@@ -222,6 +252,9 @@ class HomeScreen extends React.Component<IProps, IState> {
                 );
               }
             })}
+          </View>
+          <View style={{ height: 30 }}>
+            <this.airPoullutionView />
           </View>
         </Weather>
         <Animated.ScrollView
@@ -264,7 +297,7 @@ class HomeScreen extends React.Component<IProps, IState> {
 const styles = StyleSheet.create({
   scrollView: {
     flexDirection: "row",
-    height: 600
+    height: 480
   },
   scrollPage: {
     width: SCREEN_WIDTH,
