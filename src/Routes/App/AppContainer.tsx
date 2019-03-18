@@ -1,10 +1,17 @@
 import React from "react";
-import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  SafeAreaView,
+  TouchableOpacity,
+  Image
+} from "react-native";
 import {
   createDrawerNavigator,
   createAppContainer,
   createStackNavigator,
-  NavigationScreenProps
+  NavigationScreenProps,
+  DrawerActions
 } from "react-navigation";
 import Menu from "../../components/Menu";
 import HomeScreen from "../Home";
@@ -12,6 +19,9 @@ import DiscoverScreen from "../Discover";
 import SearchScreen from "../Search/SearchScreen";
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
+import MyPageScreen from "../../Routes/MyPage";
+import SettingScreen from "../../Routes/Setting";
+import NoticeScreen from "../../Routes/Notice";
 
 const HeadStyle = styled.View`
   display: flex;
@@ -25,6 +35,7 @@ const drawerComponent = () => {
     </SafeAreaView>
   );
 };
+
 const MainNavigator = createStackNavigator(
   {
     Home: {
@@ -81,7 +92,23 @@ const MainNavigator = createStackNavigator(
             </TouchableOpacity>
           </HeadStyle>
         ),
-        headerLeft: null,
+        headerLeft: (
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigation.dispatch(DrawerActions.toggleDrawer());
+            }}
+          >
+            <Image
+              source={require("../../images/next.png")}
+              style={{
+                marginLeft: 20,
+                width: 20,
+                height: 20,
+                marginBottom: 10
+              }}
+            />
+          </TouchableOpacity>
+        ),
         headerRight: (
           <View style={{ marginRight: 10, marginBottom: 10 }}>
             <Ionicons
@@ -101,8 +128,20 @@ const MyDrawerNavigator = createDrawerNavigator(
     Main: {
       screen: MainNavigator
     },
+    MyPage: {
+      screen: MyPageScreen
+    },
     Search: {
       screen: SearchScreen
+    },
+    Like: {
+      screen: MyPageScreen
+    },
+    Setting: {
+      screen: SettingScreen
+    },
+    Notice: {
+      screen: NoticeScreen
     }
   },
   {
