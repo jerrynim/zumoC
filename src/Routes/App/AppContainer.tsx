@@ -1,33 +1,38 @@
 import React from "react";
+import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import {
-  createStackNavigator,
+  createDrawerNavigator,
   createAppContainer,
+  createStackNavigator,
   NavigationScreenProps
 } from "react-navigation";
-import Drawer from "react-native-drawer";
-import HomeScreen from "../Home";
-import DiscoverScreen from "../Discover/DiscoverScreen";
-import SearchScreen from "../Search/SearchScreen";
 import Menu from "../../components/Menu";
-import { TouchableOpacity, View, Text } from "react-native";
-// tslint:disable-next-line
+import HomeScreen from "../Home";
+import DiscoverScreen from "../Discover";
+import SearchScreen from "../Search/SearchScreen";
 import { Ionicons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-
-interface IState {
-  isMenuOpen: boolean;
-}
 
 const HeadStyle = styled.View`
   display: flex;
   flex-direction: row;
   height: 40;
 `;
-
-const HomeStack = createStackNavigator(
+const drawerComponent = () => {
+  return (
+    <SafeAreaView>
+      <Menu />
+    </SafeAreaView>
+  );
+};
+const MainNavigator = createStackNavigator(
   {
-    Home: { screen: HomeScreen },
-    Discover: { screen: DiscoverScreen }
+    Home: {
+      screen: HomeScreen
+    },
+    Discover: {
+      screen: DiscoverScreen
+    }
   },
   {
     initialRouteName: "Home",
@@ -81,7 +86,7 @@ const HomeStack = createStackNavigator(
           <View style={{ marginRight: 10, marginBottom: 10 }}>
             <Ionicons
               name={"ios-search"}
-              size={"30"}
+              size={30}
               color={"rgba(0,0,0,0.7)"}
               onPress={() => navigation.navigation.navigate("Search")}
             />
@@ -91,77 +96,24 @@ const HomeStack = createStackNavigator(
     }
   }
 );
-
-const MainStack = createStackNavigator(
+const MyDrawerNavigator = createDrawerNavigator(
   {
     Main: {
-      screen: HomeStack
+      screen: MainNavigator
     },
     Search: {
-      screen: SearchScreen,
-      headerLeft: "null"
+      screen: SearchScreen
     }
   },
   {
-    headerMode: "none"
+    contentComponent: drawerComponent
   }
 );
+const AppPresenter = createAppContainer(MyDrawerNavigator);
 
-const AppPresenter = createAppContainer(MainStack);
-
-class AppContainer extends React.Component<IState> {
-  public state = {
-    isMenuOpen: false
-  };
+class AppContainer extends React.Component {
   render() {
-    const { isMenuOpen } = this.state;
-    return (
-      <React.Fragment>
-        <Drawer
-          type="overlay"
-          open={isMenuOpen}
-          content={<Menu />}
-          openDrawerOffset={100}
-          acceptTap={true}
-          onClose={() => {
-            this.setState({ isMenuOpen: !isMenuOpen });
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              zIndex: 1,
-              marginTop: 40,
-              marginLeft: 15
-            }}
-            onPress={() =>
-              this.setState({
-                isMenuOpen: !isMenuOpen
-              })
-            }
-          >
-            <Ionicons size={50} name={"ios-menu"} color={"black"} />
-          </TouchableOpacity>
-          {isMenuOpen ? (
-            <View
-              style={{
-                backgroundColor: "black",
-                opacity: 0.6,
-                height: 1000,
-                width: 1000,
-                position: "absolute",
-                zIndex: 1
-              }}
-            >
-              <Text>overlay</Text>
-            </View>
-          ) : null}
-
-          <AppPresenter />
-        </Drawer>
-      </React.Fragment>
-    );
+    return <AppPresenter />;
   }
 }
-
 export default AppContainer;
