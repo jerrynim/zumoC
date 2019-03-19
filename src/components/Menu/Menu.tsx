@@ -68,7 +68,12 @@ class Menu extends React.Component<IProps> {
                 justifyContent: "center"
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>⚲ SEARCH</Text>
+              <Text
+                onPress={() => this.props.onPress("Search")}
+                style={{ fontSize: 15, fontWeight: "500" }}
+              >
+                ⚲ SEARCH
+              </Text>
             </View>
             <View
               style={{
@@ -81,7 +86,12 @@ class Menu extends React.Component<IProps> {
                 justifyContent: "center"
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>♡ LIKE</Text>
+              <Text
+                onPress={() => this.props.onPress("MyPage")}
+                style={{ fontSize: 15, fontWeight: "500" }}
+              >
+                ♡ LIKE
+              </Text>
             </View>
             <View
               style={{
@@ -94,7 +104,10 @@ class Menu extends React.Component<IProps> {
                 justifyContent: "center"
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>
+              <Text
+                onPress={() => this.props.onPress("Setting")}
+                style={{ fontSize: 15, fontWeight: "500" }}
+              >
                 ⚙︎ SETTING
               </Text>
             </View>
@@ -107,7 +120,12 @@ class Menu extends React.Component<IProps> {
                 justifyContent: "center"
               }}
             >
-              <Text style={{ fontSize: 15, fontWeight: "500" }}>✓ NOTICE</Text>
+              <Text
+                onPress={() => this.props.onPress("Page")}
+                style={{ fontSize: 15, fontWeight: "500" }}
+              >
+                ✓ NOTICE
+              </Text>
             </View>
             <View
               style={{

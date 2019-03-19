@@ -268,9 +268,11 @@ class HomeScreen extends React.Component<IProps, IState> {
           style={styles.scrollView}
         >
           <Screen
-            title="Screen 1"
+            title="루프탑에서 봄디브 하 잔해~"
+            MainTitle="로맨틱 파노라마 갬성 루프탑 추천 6"
+            hashTags={["#봄바람스멜", "#옥상으로따다와"]}
             uri={
-              "https://img.webmd.com/dtmcms/live/webmd/consumer_assets/site_images/rich_media_quiz/topic/rmq_dating/getty_rf_twofinger.jpg?resize=692px:*"
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQko1mS-PFT5T3wc1y7MkdsxBJS9Na1ASrAKCFHADD4cNUogs6k"
             }
             index={0}
           />
@@ -328,7 +330,45 @@ const Screen = (props: any) => {
           imageStyle={{ resizeMode: "stretch" }}
           style={{ width: SCREEN_WIDTH - 90, height: 500 }}
         >
-          <Text style={styles.text}>{props.title}</Text>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "column",
+              justifyContent: "center",
+              marginLeft: 20,
+              paddingTop: 170
+            }}
+          >
+            <View>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 13,
+                  fontWeight: "700",
+                  marginBottom: 25
+                }}
+              >
+                {props.title}
+              </Text>
+            </View>
+            <View style={{ width: 220 }}>
+              <Text
+                style={{
+                  color: "white",
+                  fontSize: 30,
+                  fontWeight: "200",
+                  marginBottom: 25
+                }}
+              >
+                {props.MainTitle}
+              </Text>
+            </View>
+            <View>
+              <Text style={{ color: "white", fontSize: 12, fontWeight: "800" }}>
+                {props.hashTags}
+              </Text>
+            </View>
+          </View>
         </ImageBackground>
       </Animated.View>
     </View>

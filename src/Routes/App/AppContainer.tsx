@@ -23,6 +23,7 @@ import MyPageScreen from "../../Routes/MyPage";
 import SettingScreen from "../../Routes/Setting";
 import NoticeScreen from "../../Routes/Notice";
 import Menu from "../../components/Menu";
+import Page from "../Page";
 
 const HeadStyle = styled.View`
   display: flex;
@@ -158,6 +159,9 @@ const MyDrawerNavigator = createDrawerNavigator(
     },
     Notice: {
       screen: NoticeScreen
+    },
+    Page: {
+      screen: Page
     }
   },
   {
