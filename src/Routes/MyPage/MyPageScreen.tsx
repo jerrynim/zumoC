@@ -1,6 +1,20 @@
 import React from "react";
-import { View } from "react-native";
+import { Text, SafeAreaView } from "react-native";
 
-const MyPageScreen = () => <View>this is example</View>;
+interface IProps {
+  navigation: any;
+}
+
+class MyPageScreen extends React.Component<IProps> {
+  public render() {
+    return (
+      <SafeAreaView>
+        <Text onPress={() => this.props.navigation.goBack()}>
+          this is example
+        </Text>
+      </SafeAreaView>
+    );
+  }
+}
 
 export default MyPageScreen;

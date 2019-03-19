@@ -11,9 +11,9 @@ import {
   createAppContainer,
   createStackNavigator,
   NavigationScreenProps,
-  DrawerActions
+  DrawerActions,
+  DrawerItemsProps
 } from "react-navigation";
-import Menu from "../../components/Menu";
 import HomeScreen from "../Home";
 import DiscoverScreen from "../Discover";
 import SearchScreen from "../Search/SearchScreen";
@@ -22,20 +22,36 @@ import styled from "styled-components/native";
 import MyPageScreen from "../../Routes/MyPage";
 import SettingScreen from "../../Routes/Setting";
 import NoticeScreen from "../../Routes/Notice";
+import Menu from "../../components/Menu";
 
 const HeadStyle = styled.View`
   display: flex;
   flex-direction: row;
   height: 40;
 `;
-const drawerComponent = () => {
-  return (
-    <SafeAreaView>
-      <Menu />
-    </SafeAreaView>
-  );
-};
-
+class DrawerComponent extends React.Component<DrawerItemsProps> {
+  constructor(props: DrawerItemsProps) {
+    super(props);
+  }
+  public render() {
+    return (
+      <SafeAreaView>
+        <Menu
+          onPress={(routeName: string) =>
+            this.props.navigation.navigate({
+              routeName: routeName
+            })
+          }
+        />
+      </SafeAreaView>
+    );
+  }
+}
+// onPress={() =>
+//   this.props.navigation.navigate({
+//     routeName: "MyPage"
+//   })
+// }
 const MainNavigator = createStackNavigator(
   {
     Home: {
@@ -145,7 +161,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     }
   },
   {
-    contentComponent: drawerComponent
+    contentComponent: DrawerComponent
   }
 );
 const AppPresenter = createAppContainer(MyDrawerNavigator);
