@@ -5,10 +5,11 @@ import {
   Text,
   Animated,
   Dimensions,
-  StyleSheet,
-  ImageBackground,
   TouchableWithoutFeedback,
-  Image
+  Image,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity
 } from "react-native";
 import styled from "styled-components/native";
 import { WEATHERAPI_KEY, AIRVISUAL_KEY } from "../../keys";
@@ -19,6 +20,38 @@ import Page from "../Page";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
+const Header = styled.View`
+  background-color: red;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 15px;
+  position: absolute;
+`;
+
+const SubTitle = styled.Text`
+  color: white;
+  font-size: 14;
+  font-weight: 700;
+  margin-bottom: 20px;
+`;
+const Title = styled.Text`
+  color: white;
+  font-size: 25;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 40px;
+`;
+const HasgTags = styled.Text`
+  color: white;
+  font-size: 14;
+  font-weight: 700;
+`;
+
+const HeaderTitles = styled.View`
+  background-color: black;
+  padding-top: 30px;
+  position: absolute;
+`;
 const Weather = styled.View`
   display: flex;
   flex-direction: column;
@@ -108,7 +141,7 @@ class HomeScreen extends React.Component<IProps, IState> {
                 duration: 300
               }),
               Animated.timing(this.position.y, {
-                toValue: 0,
+                toValue: dPageY,
                 duration: 300
               }),
               Animated.timing(this.dimensions.x, {
@@ -276,9 +309,9 @@ class HomeScreen extends React.Component<IProps, IState> {
 
   render() {
     const activeImageStyle = {
-      width: this.dimensions.x,
-      height: this.dimensions.y,
-      left: this.position.x,
+      width: SCREEN_WIDTH,
+      height: 300,
+      left: 0,
       top: this.position.y
     };
 
@@ -306,11 +339,7 @@ class HomeScreen extends React.Component<IProps, IState> {
     };
     const { Date, Week, WeekSchedule } = this.state;
     return (
-      <SafeAreaView
-        forceInset={{
-          bottom: "never"
-        }}
-      >
+      <SafeAreaView>
         <Weather>
           <Text
             style={{
@@ -390,7 +419,7 @@ class HomeScreen extends React.Component<IProps, IState> {
           )}
           horizontal
           pagingEnabled
-          style={styles.scrollView}
+          style={{}}
         >
           {images.map((image, index) => (
             <TouchableWithoutFeedback
@@ -399,25 +428,55 @@ class HomeScreen extends React.Component<IProps, IState> {
             >
               <Animated.View
                 style={{
-                  height: 150,
+                  height: 550,
                   width: SCREEN_WIDTH,
-                  padding: 15
+                  padding: 15,
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "flex-end"
                 }}
               >
                 <Image
                   ref={(image) => (this.allImages[index] = image)}
                   source={image.src}
                   style={{
-                    flex: 1,
+                    height: 500,
                     resizeMode: "cover",
                     borderRadius: 20
                   }}
                 />
+                <Header>
+                  <TouchableOpacity>
+                    <Image
+                      source={require("../../images/back.png")}
+                      style={{ width: 23, height: 23 }}
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{ justifyContent: "center", flexDirection: "row" }}
+                  >
+                    <Image
+                      source={require("../../images/share.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                    <Image
+                      source={require("../../images/heart.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                  </View>
+                </Header>
+                <HeaderTitles>
+                  <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
+                  <View style={{ width: 220 }}>
+                    <Title>로맨틱 파노라마 갬성 루프탑 추천 6</Title>
+                  </View>
+                  <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
+                </HeaderTitles>
               </Animated.View>
             </TouchableWithoutFeedback>
           ))}
         </Animated.ScrollView>
-        <View
+        <ScrollView
           style={StyleSheet.absoluteFill}
           pointerEvents={this.state.activeImage ? "auto" : "none"}
         >
@@ -466,107 +525,12 @@ class HomeScreen extends React.Component<IProps, IState> {
           >
             <Page />
           </Animated.View>
-        </View>
+        </ScrollView>
       </SafeAreaView>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  scrollView: {
-    flexDirection: "row",
-    height: 480
-  },
-  scrollPage: {
-    width: SCREEN_WIDTH,
-    padding: 45
-  },
-  screen: {
-    height: 500,
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  text: {
-    fontSize: 25,
-    fontWeight: "bold",
-    color: "white"
-  }
-});
-
 const xOffset = new Animated.Value(0);
-
-const Screen = (props: any) => {
-  return (
-    <View style={styles.scrollPage}>
-      <Animated.View style={[styles.screen, transitionAnimation(props.index)]}>
-        <ImageBackground
-          source={{
-            uri: props.uri
-          }}
-          imageStyle={{ resizeMode: "stretch" }}
-          style={{ width: SCREEN_WIDTH - 90, height: 500 }}
-        >
-          <View
-            style={{
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "center",
-              marginLeft: 20,
-              paddingTop: 170
-            }}
-          >
-            <View>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 13,
-                  fontWeight: "700",
-                  marginBottom: 25
-                }}
-              >
-                {props.title}
-              </Text>
-            </View>
-            <View style={{ width: 220 }}>
-              <Text
-                style={{
-                  color: "white",
-                  fontSize: 30,
-                  fontWeight: "200",
-                  marginBottom: 25
-                }}
-              >
-                {props.MainTitle}
-              </Text>
-            </View>
-            <View>
-              <Text style={{ color: "white", fontSize: 12, fontWeight: "800" }}>
-                {props.hashTags}
-              </Text>
-            </View>
-          </View>
-        </ImageBackground>
-      </Animated.View>
-    </View>
-  );
-};
-
-const transitionAnimation = (index: number) => {
-  return {
-    transform: [
-      { perspective: 800 },
-      {
-        scale: xOffset.interpolate({
-          inputRange: [
-            (index - 1) * SCREEN_WIDTH,
-            index * SCREEN_WIDTH,
-            (index + 1) * SCREEN_WIDTH
-          ],
-          outputRange: [0.8, 1, 0.8]
-        })
-      }
-    ]
-  };
-};
 
 export default HomeScreen;

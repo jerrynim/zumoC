@@ -91,7 +91,7 @@ const TagBox = styled.Text`
 class Page extends React.Component {
   public render() {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={{ backgroundColor: "white" }}>
         <ScrollView>
           <ImageBackground
             source={{
