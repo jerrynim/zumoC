@@ -1,15 +1,5 @@
 import React, { Component } from "react";
-import {
-  Animated,
-  Image,
-  Platform,
-  StyleSheet,
-  View,
-  Text,
-  ListView,
-  ImageBackground,
-  ScrollView
-} from "react-native";
+import { Animated, Platform, StyleSheet, View, ScrollView } from "react-native";
 import Page from "../Page";
 
 const NAVBAR_HEIGHT = 64;

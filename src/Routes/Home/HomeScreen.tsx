@@ -1,4 +1,4 @@
-import React, { createRef } from "react";
+import React from "react";
 import {
   SafeAreaView,
   NavigationScreenProp,
@@ -13,83 +13,32 @@ import {
   Image,
   ScrollView,
   StyleSheet,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
 } from "react-native";
-import styled from "styled-components/native";
 import { WEATHERAPI_KEY, AIRVISUAL_KEY } from "../../keys";
 import { reverseGeoCode } from "../../utils";
 import moment from "moment";
 import Icon from "react-native-vector-icons/Ionicons";
 import Page from "../Page";
 import { Ionicons } from "@expo/vector-icons";
+import {
+  HeaderMiddle,
+  Weather,
+  HeaderTitles,
+  SubTitle,
+  Title,
+  HasgTags,
+  PageHeader,
+  PageHeaderTitles,
+  PageTitle,
+  Header
+} from "../styled";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const SubTitle = styled.Text`
-  color: white;
-  font-size: 14;
-  font-weight: 500;
-  margin-bottom: 20px;
-`;
-
-const HeaderMiddle = styled.View`
-  flex-direction: row;
-  justify-content: center;
-  text-align: center;
-  padding-right: 15px;
-  padding-bottom: 10px;
-`;
-const PageHeader = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 15px;
-`;
-const Title = styled.Text`
-  color: white;
-  font-size: 25;
-  font-weight: 200;
-  margin-bottom: 30px;
-`;
-
-const PageTitle = styled.Text`
-  color: white;
-  font-size: 25;
-  font-weight: 700;
-  margin-bottom: 30px;
-  text-align: center;
-`;
-const HasgTags = styled.Text`
-  color: white;
-  font-size: 14;
-  font-weight: 500;
-`;
-
-const HeaderTitles = styled.View`
-  padding-top: 30px;
-  position: absolute;
-  padding-right: 30px;
-  padding-bottom: 50px;
-`;
-const Weather = styled.View`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-top: 20px;
-  text-align: center;
-  background-color: " rgba(0,0,0,0.07)";
-`;
-
-const Header = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const PageHeaderTitles = styled.View`
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
+const NAVBAR_HEIGHT = 64;
+const STATUS_BAR_HEIGHT = Platform.select({ ios: 20, android: 24 });
+const AnimatedListView = Animated.createAnimatedComponent(ScrollView);
 
 const images = [
   { id: 1, src: require("../../images/valley.jpeg") },
@@ -111,6 +60,9 @@ interface IState {
   WeekSchedule: Schedule[];
   airPollution: number;
   activeImage: any;
+  scrollAnim: Animated.Value;
+  offsetAnim: Animated.Value;
+  clampedScroll: Animated.AnimatedDiffClamp;
 }
 
 interface Schedule {
@@ -122,16 +74,39 @@ interface Schedule {
 }
 
 class HomeScreen extends React.Component<IProps, IState> {
-  public state = {
-    activeImage: null,
-    Week: "",
-    Date: "",
-    temperature: 0,
-    weather: "",
-    GeoName: "",
-    airPollution: 0,
-    WeekSchedule: [{ id: 0, day: "", dayName: "", temp: 0, weather: "" }]
-  };
+  constructor(props) {
+    super(props);
+
+    const scrollAnim = new Animated.Value(0);
+    /*ListView 의 현재 스크롤 y 위치입니다.*/
+    const offsetAnim = new Animated.Value(0);
+    /*필요한 경우 프로그래밍 방식으로 탐색 바를 이동하는 데 사용됩니다. 이것은 스크롤 동작의 끝에서 네비게이션 바를 완전히 드러내거나 숨길 때 유용합니다. */
+    this.state = {
+      scrollAnim,
+      offsetAnim,
+      clampedScroll: Animated.diffClamp(
+        Animated.add(
+          scrollAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+            extrapolateLeft: "clamp"
+          }),
+          offsetAnim
+        ),
+        0,
+        NAVBAR_HEIGHT - STATUS_BAR_HEIGHT
+      ),
+      /*이 값은 navbar에 애니메이션을 적용하는 데 사용됩니다. 우리는 또한 각 렌더에서 다시 생성되는 것을 피하기 위해 그것을 상태로 저장합니다. scrollAnim 과 offsetAnim을 함께 추가 한 다음 Animated.diffClamp 를 사용하여 만듭니다. diffClamp 가 다음 섹션에서 자세히 설명 합니다. 또한 iOS에서 반송 효과 문제를 피하기 위해 scrollAnim 에 보간을 수행 합니다. */
+      activeImage: null,
+      Week: "",
+      Date: "",
+      temperature: 0,
+      weather: "",
+      GeoName: "",
+      airPollution: 0,
+      WeekSchedule: [{ id: 0, day: "", dayName: "", temp: 0, weather: "" }]
+    };
+  }
 
   public allImages = { images };
   public oldPosition = { x: 0, y: 0, width: 0, height: 0 };
@@ -139,10 +114,14 @@ class HomeScreen extends React.Component<IProps, IState> {
   public dimensions = new Animated.ValueXY();
   public animation = new Animated.Value(0);
   public activeImageStyle = null;
-  public viewImage = createRef();
+  public viewImage: null | View = null;
 
+  public _clampedScrollValue = 0;
+  public _offsetValue = 0;
+  public _scrollValue = 0;
+  public _scrollEndTimer = 0;
   openImage = (index) => {
-    this.allImages[index].measure((x, y, width, height, pageX, pageY) => {
+    this.allImages[index].measure((_, __, width, height, pageX, pageY) => {
       this.oldPosition.x = pageX;
       this.oldPosition.y = pageY;
       this.oldPosition.width = width;
@@ -163,31 +142,32 @@ class HomeScreen extends React.Component<IProps, IState> {
           activeImage: images[index]
         },
         () => {
-          this.viewImage.measure((dx, dy, dWidth, dHeight, dPageX, dPageY) => {
-            console.log(dx, dy, dWidth, dHeight, dPageX, dPageY);
-            Animated.parallel([
-              Animated.timing(this.position.x, {
-                toValue: dPageX,
-                duration: 300
-              }),
-              Animated.timing(this.position.y, {
-                toValue: dPageY,
-                duration: 300
-              }),
-              Animated.timing(this.dimensions.x, {
-                toValue: dWidth,
-                duration: 300
-              }),
-              Animated.timing(this.dimensions.y, {
-                toValue: dHeight,
-                duration: 300
-              }),
-              Animated.timing(this.animation, {
-                toValue: 1,
-                duration: 300
-              })
-            ]).start();
-          });
+          this.viewImage!.measure(
+            (___, ____, dWidth, dHeight, dPageX, dPageY) => {
+              Animated.parallel([
+                Animated.timing(this.position.x, {
+                  toValue: dPageX,
+                  duration: 300
+                }),
+                Animated.timing(this.position.y, {
+                  toValue: dPageY,
+                  duration: 300
+                }),
+                Animated.timing(this.dimensions.x, {
+                  toValue: dWidth,
+                  duration: 300
+                }),
+                Animated.timing(this.dimensions.y, {
+                  toValue: dHeight,
+                  duration: 300
+                }),
+                Animated.timing(this.animation, {
+                  toValue: 1,
+                  duration: 300
+                })
+              ]).start();
+            }
+          );
         }
       );
     });
@@ -237,7 +217,46 @@ class HomeScreen extends React.Component<IProps, IState> {
     );
     this.getDate();
     this.getSchedule();
+
+    this.state.scrollAnim.addListener(({ value }) => {
+      const diff = value - this._scrollValue;
+      this._scrollValue = value;
+      this._clampedScrollValue = Math.min(
+        Math.max(this._clampedScrollValue + diff, 0),
+        NAVBAR_HEIGHT - STATUS_BAR_HEIGHT
+      );
+    });
+    this.state.offsetAnim.addListener(({ value }) => {
+      this._offsetValue = value;
+    });
   }
+
+  componentWillUnmount() {
+    this.state.scrollAnim.removeAllListeners();
+    this.state.offsetAnim.removeAllListeners();
+  }
+
+  _onScrollEndDrag = () => {
+    this._scrollEndTimer = setTimeout(this._onMomentumScrollEnd, 250);
+  };
+
+  _onMomentumScrollBegin = () => {
+    clearTimeout(this._scrollEndTimer);
+  };
+
+  _onMomentumScrollEnd = () => {
+    const toValue =
+      this._scrollValue > NAVBAR_HEIGHT &&
+      this._clampedScrollValue > (NAVBAR_HEIGHT - STATUS_BAR_HEIGHT) / 2
+        ? this._offsetValue + NAVBAR_HEIGHT
+        : this._offsetValue - NAVBAR_HEIGHT;
+
+    Animated.timing(this.state.offsetAnim, {
+      toValue,
+      duration: 350,
+      useNativeDriver: true
+    }).start();
+  };
 
   getDate = async () => {
     const today = moment().format("L");
@@ -368,6 +387,20 @@ class HomeScreen extends React.Component<IProps, IState> {
       opacity: this.animation
     };
     const { Date, Week, WeekSchedule } = this.state;
+
+    const { clampedScroll } = this.state;
+
+    const navbarTranslate = clampedScroll.interpolate({
+      inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
+      outputRange: [0, -(NAVBAR_HEIGHT - STATUS_BAR_HEIGHT)],
+      extrapolate: "clamp"
+    });
+    const navbarOpacity = clampedScroll.interpolate({
+      inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
+    });
+
     return (
       <SafeAreaView>
         <Header>
@@ -499,18 +532,7 @@ class HomeScreen extends React.Component<IProps, IState> {
             <this.airPoullutionView />
           </View>
         </Weather>
-        <Animated.ScrollView
-          scrollEventThrottle={16}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { x: xOffset } } }],
-            { useNativeDriver: true }
-          )}
-          horizontal
-          pagingEnabled
-          style={{}}
-          overScrollMode="never"
-          alwaysBounceHorizontal="false"
-        >
+        <ScrollView horizontal pagingEnabled overScrollMode="never">
           {images.map((image, index) => (
             <TouchableWithoutFeedback
               onPress={() => this.openImage(index)}
@@ -526,14 +548,13 @@ class HomeScreen extends React.Component<IProps, IState> {
                 }}
               >
                 <Image
-                  ref={(image) => (this.allImages[index] = image)}
+                  ref={(CImage) => (this.allImages[index] = CImage)}
                   source={image.src}
                   style={{
                     height: 450,
                     resizeMode: "cover"
                   }}
                 />
-
                 <HeaderTitles>
                   <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
                   <View style={{ width: 220 }}>
@@ -544,15 +565,24 @@ class HomeScreen extends React.Component<IProps, IState> {
               </Animated.View>
             </TouchableWithoutFeedback>
           ))}
-        </Animated.ScrollView>
-        <ScrollView
+        </ScrollView>
+        <AnimatedListView
           style={StyleSheet.absoluteFill}
           pointerEvents={this.state.activeImage ? "auto" : "none"}
+          scrollEventThrottle={16}
           bounces={false}
+          onMomentumScrollBegin={this._onMomentumScrollBegin}
+          onMomentumScrollEnd={this._onMomentumScrollEnd}
+          onScrollEndDrag={this._onScrollEndDrag}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
+            { useNativeDriver: true }
+          )}
         >
           <View
-            style={{ flex: 1, zIndex: 1001 }}
+            style={{ flex: 1, zIndex: 1001, paddingTop: 40 }}
             ref={(view) => (this.viewImage = view)}
+            /*나타날 뷰 */
           >
             <Animated.Image
               source={
@@ -625,12 +655,56 @@ class HomeScreen extends React.Component<IProps, IState> {
           >
             <Page />
           </Animated.View>
-        </ScrollView>
+        </AnimatedListView>
+        <Animated.View
+          style={[
+            styles.navbar,
+            {
+              transform: [{ translateY: navbarTranslate }]
+            }
+          ]}
+        >
+          <Animated.Text style={[styles.title, { opacity: navbarOpacity }]}>
+            PLACES
+          </Animated.Text>
+        </Animated.View>
       </SafeAreaView>
     );
   }
 }
-
-const xOffset = new Animated.Value(0);
-
+const styles = StyleSheet.create({
+  fill: {
+    flex: 1
+  },
+  navbar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    backgroundColor: "white",
+    borderBottomColor: "#dedede",
+    borderBottomWidth: 1,
+    height: NAVBAR_HEIGHT,
+    justifyContent: "center",
+    paddingTop: STATUS_BAR_HEIGHT
+  },
+  contentContainer: {
+    paddingTop: NAVBAR_HEIGHT
+  },
+  title: {
+    color: "#333333"
+  },
+  row: {
+    height: 300,
+    width: null,
+    marginBottom: 1,
+    padding: 16,
+    backgroundColor: "transparent"
+  },
+  rowText: {
+    color: "white",
+    fontSize: 18
+  }
+});
 export default HomeScreen;
