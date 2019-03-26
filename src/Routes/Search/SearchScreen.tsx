@@ -1,248 +1,185 @@
-import React, { createRef } from "react";
+import React, { Component } from "react";
 import {
-  SafeAreaView,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-  TouchableWithoutFeedback,
   Animated,
   Image,
+  Platform,
+  StyleSheet,
+  View,
   Text,
-  View
+  ListView,
+  ImageBackground,
+  ScrollView
 } from "react-native";
+import Page from "../Page";
 
-const SCREEN_WIDTH = Dimensions.get("window").width;
-const SCREEN_HEIGHT = Dimensions.get("window").height;
-const images = [
-  { id: 1, src: require("../../images/valley.jpeg") },
-  { id: 2, src: require("../../images/lake.jpeg") },
-  { id: 3, src: require("../../images/forest.jpeg") },
-  { id: 4, src: require("../../images/flower.jpeg") }
-];
+const NAVBAR_HEIGHT = 64;
+const STATUS_BAR_HEIGHT = Platform.select({ ios: 20, android: 24 });
+
+const AnimatedListView = Animated.createAnimatedComponent(ScrollView);
 
 interface IState {
-  activeImage: any;
+  scrollAnim: Animated.Value;
+  offsetAnim: Animated.Value;
+  clampedScroll: Animated.AnimatedDiffClamp;
 }
-class SearchScreen extends React.Component<IState> {
+
+class SearchScreen extends Component<IState> {
   constructor(props) {
     super(props);
+
+    const scrollAnim = new Animated.Value(0);
+    /*ListView 의 현재 스크롤 y 위치입니다.*/
+    const offsetAnim = new Animated.Value(0);
+    /*필요한 경우 프로그래밍 방식으로 탐색 바를 이동하는 데 사용됩니다. 이것은 스크롤 동작의 끝에서 네비게이션 바를 완전히 드러내거나 숨길 때 유용합니다. */
     this.state = {
-      activeImage: null
+      scrollAnim,
+      offsetAnim,
+      clampedScroll: Animated.diffClamp(
+        Animated.add(
+          scrollAnim.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+            extrapolateLeft: "clamp"
+          }),
+          offsetAnim
+        ),
+        0,
+        NAVBAR_HEIGHT - STATUS_BAR_HEIGHT
+      )
+      /*이 값은 navbar에 애니메이션을 적용하는 데 사용됩니다. 우리는 또한 각 렌더에서 다시 생성되는 것을 피하기 위해 그것을 상태로 저장합니다. scrollAnim 과 offsetAnim을 함께 추가 한 다음 Animated.diffClamp 를 사용하여 만듭니다. diffClamp 가 다음 섹션에서 자세히 설명 합니다. 또한 iOS에서 반송 효과 문제를 피하기 위해 scrollAnim 에 보간을 수행 합니다. */
     };
   }
-  public allImages = { images };
-  public oldPosition = { x: 0, y: 0, width: 0, height: 0 };
-  public position = new Animated.ValueXY();
-  public dimensions = new Animated.ValueXY();
-  public animation = new Animated.Value(0);
-  public activeImageStyle = null;
-  public viewImage = createRef();
-  openImage = (index) => {
-    this.allImages[index].measure((x, y, width, height, pageX, pageY) => {
-      this.oldPosition.x = pageX;
-      this.oldPosition.y = pageY;
-      this.oldPosition.width = width;
-      this.oldPosition.height = height;
 
-      this.position.setValue({
-        x: pageX,
-        y: pageY
-      });
+  public _clampedScrollValue = 0;
+  public _offsetValue = 0;
+  public _scrollValue = 0;
 
-      this.dimensions.setValue({
-        x: width,
-        y: height
-      });
-
-      console.log(pageX, pageY, width, height);
-
-      this.setState(
-        {
-          activeImage: images[index]
-        },
-        () => {
-          this.viewImage.measure((dx, dy, dWidth, dHeight, dPageX, dPageY) => {
-            console.log(dx, dy, dWidth, dHeight, dPageX, dPageY);
-
-            Animated.parallel([
-              Animated.timing(this.position.x, {
-                toValue: dPageX,
-                duration: 300
-              }),
-              Animated.timing(this.position.y, {
-                toValue: dPageY,
-                duration: 300
-              }),
-              Animated.timing(this.dimensions.x, {
-                toValue: dWidth,
-                duration: 300
-              }),
-              Animated.timing(this.dimensions.y, {
-                toValue: dHeight,
-                duration: 300
-              }),
-              Animated.timing(this.animation, {
-                toValue: 1,
-                duration: 300
-              })
-            ]).start();
-          });
-        }
+  componentDidMount() {
+    this.state.scrollAnim.addListener(({ value }) => {
+      const diff = value - this._scrollValue;
+      this._scrollValue = value;
+      this._clampedScrollValue = Math.min(
+        Math.max(this._clampedScrollValue + diff, 0),
+        NAVBAR_HEIGHT - STATUS_BAR_HEIGHT
       );
     });
-  };
-  closeImage = () => {
-    Animated.parallel([
-      Animated.timing(this.position.x, {
-        toValue: this.oldPosition.x,
-        duration: 300
-      }),
-      Animated.timing(this.position.y, {
-        toValue: this.oldPosition.y,
-        duration: 250
-      }),
-      Animated.timing(this.dimensions.x, {
-        toValue: this.oldPosition.width,
-        duration: 250
-      }),
-      Animated.timing(this.dimensions.y, {
-        toValue: this.oldPosition.height,
-        duration: 250
-      }),
-      Animated.timing(this.animation, {
-        toValue: 0,
-        duration: 250
-      })
-    ]).start(() => {
-      this.setState({
-        activeImage: null
-      });
+    this.state.offsetAnim.addListener(({ value }) => {
+      this._offsetValue = value;
     });
+    /*마지막으로 필요한 것은 탐색 표시 줄을 숨기거나 표시할지 여부를 아는 것입니다.
+     이를 위해 우리는 사용 된 다른 애니메이션 값 의 가치를 알아야합니다 . 
+     이를 위해 리스너를 값에 추가하고 인스턴스 변수에 저장하여 _onMomentumScrollEnd
+      메소드 에 액세스 할 수 있습니다 . 한 가지주의 할 점은 Animated.diffClamp 에서 
+      반환 된 값은 청취자를 추가하는 것을 지원하지 않습니다 (지원할 수 있는 PR 이 있지만 아직
+         병합되지 않았습니다).
+     그래서 우리는 diffClamp 가 수동으로 수행하는 것과 동일한 계산을 수행해야합니다. */
+  }
+
+  componentWillUnmount() {
+    this.state.scrollAnim.removeAllListeners();
+    this.state.offsetAnim.removeAllListeners();
+  }
+
+  _onScrollEndDrag = () => {
+    this._scrollEndTimer = setTimeout(this._onMomentumScrollEnd, 250);
   };
+
+  _onMomentumScrollBegin = () => {
+    clearTimeout(this._scrollEndTimer);
+  };
+
+  _onMomentumScrollEnd = () => {
+    const toValue =
+      this._scrollValue > NAVBAR_HEIGHT &&
+      this._clampedScrollValue > (NAVBAR_HEIGHT - STATUS_BAR_HEIGHT) / 2
+        ? this._offsetValue + NAVBAR_HEIGHT
+        : this._offsetValue - NAVBAR_HEIGHT;
+
+    Animated.timing(this.state.offsetAnim, {
+      toValue,
+      duration: 350,
+      useNativeDriver: true
+    }).start();
+  };
+
   render() {
-    const activeImageStyle = {
-      width: this.dimensions.x,
-      height: this.dimensions.y,
-      left: this.position.x,
-      top: this.position.y
-    };
+    const { clampedScroll } = this.state;
 
-    const animatedContentY = this.animation.interpolate({
-      inputRange: [0, 1],
-      outputRange: [-150, 0]
+    const navbarTranslate = clampedScroll.interpolate({
+      inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
+      outputRange: [0, -(NAVBAR_HEIGHT - STATUS_BAR_HEIGHT)],
+      extrapolate: "clamp"
     });
-
-    const animatedContentOpacity = this.animation.interpolate({
-      inputRange: [0, 0.5, 1],
-      outputRange: [0, 1, 1]
+    const navbarOpacity = clampedScroll.interpolate({
+      inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
+      outputRange: [1, 0],
+      extrapolate: "clamp"
     });
-
-    const animatedContentStyle = {
-      opacity: animatedContentOpacity,
-      transform: [
-        {
-          translateY: animatedContentY
-        }
-      ]
-    };
-
-    const animatedCrossOpacity = {
-      opacity: this.animation
-    };
 
     return (
-      <SafeAreaView style={{ flex: 1 }}>
-        <ScrollView style={{ flex: 1 }}>
-          {images.map((image, index) => {
-            return (
-              <TouchableWithoutFeedback
-                onPress={() => this.openImage(index)}
-                key={image.id}
-              >
-                <Animated.View
-                  style={{
-                    height: SCREEN_HEIGHT - 150,
-                    width: SCREEN_WIDTH,
-                    padding: 15
-                  }}
-                >
-                  <Image
-                    ref={(image) => (this.allImages[index] = image)}
-                    source={image.src}
-                    style={{
-                      flex: 1,
-                      resizeMode: "cover",
-                      borderRadius: 20
-                    }}
-                  />
-                </Animated.View>
-              </TouchableWithoutFeedback>
-            );
-          })}
-        </ScrollView>
-        <View
-          style={StyleSheet.absoluteFill}
-          pointerEvents={this.state.activeImage ? "auto" : "none"}
+      <View style={styles.fill}>
+        <AnimatedListView
+          contentContainerStyle={styles.contentContainer}
+          scrollEventThrottle={1}
+          onMomentumScrollBegin={this._onMomentumScrollBegin}
+          onMomentumScrollEnd={this._onMomentumScrollEnd}
+          onScrollEndDrag={this._onScrollEndDrag}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
+            { useNativeDriver: true }
+          )}
         >
-          <View
-            style={{ flex: 2, zIndex: 1001 }}
-            ref={(view) => (this.viewImage = view)}
-          >
-            <Animated.Image
-              source={
-                this.state.activeImage ? this.state.activeImage.src : null
-              }
-              style={[
-                {
-                  resizeMode: "cover",
-                  top: 0,
-                  left: 0,
-                  height: null,
-                  width: null
-                },
-                activeImageStyle
-              ]}
-            />
-            <TouchableWithoutFeedback onPress={() => this.closeImage()}>
-              <Animated.View
-                style={[
-                  { position: "absolute", top: 30, right: 30 },
-                  animatedCrossOpacity
-                ]}
-              >
-                <Text
-                  style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
-                >
-                  X
-                </Text>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </View>
-          <Animated.View
-            style={[
-              {
-                flex: 1,
-                zIndex: 1000,
-                backgroundColor: "white",
-                padding: 20,
-                paddingTop: 50
-              },
-              animatedContentStyle
-            ]}
-          >
-            <Text style={{ fontSize: 24, paddingBottom: 10 }}>
-              Unsure Programmer
-            </Text>
-            <Text>
-              Eiusmod consectetur cupidatat dolor Lorem excepteur excepteur.
-              Nostrud sint officia consectetur eu pariatur laboris est velit.
-              Laborum non cupidatat qui ut sit dolore proident.
-            </Text>
-          </Animated.View>
-        </View>
-      </SafeAreaView>
+          <Page />
+        </AnimatedListView>
+        <Animated.View
+          style={[
+            styles.navbar,
+            { transform: [{ translateY: navbarTranslate }] }
+          ]}
+        >
+          <Animated.Text style={[styles.title, { opacity: navbarOpacity }]}>
+            PLACES
+          </Animated.Text>
+        </Animated.View>
+      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  fill: {
+    flex: 1
+  },
+  navbar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    backgroundColor: "white",
+    borderBottomColor: "#dedede",
+    borderBottomWidth: 1,
+    height: NAVBAR_HEIGHT,
+    justifyContent: "center",
+    paddingTop: STATUS_BAR_HEIGHT
+  },
+  contentContainer: {
+    paddingTop: NAVBAR_HEIGHT
+  },
+  title: {
+    color: "#333333"
+  },
+  row: {
+    height: 300,
+    width: null,
+    marginBottom: 1,
+    padding: 16,
+    backgroundColor: "transparent"
+  },
+  rowText: {
+    color: "white",
+    fontSize: 18
+  }
+});
 
 export default SearchScreen;
