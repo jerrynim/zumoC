@@ -1,5 +1,9 @@
 import React, { createRef } from "react";
-import { SafeAreaView, NavigationScreenProp } from "react-navigation";
+import {
+  SafeAreaView,
+  NavigationScreenProp,
+  DrawerActions
+} from "react-navigation";
 import {
   View,
   Text,
@@ -17,40 +21,54 @@ import { reverseGeoCode } from "../../utils";
 import moment from "moment";
 import Icon from "react-native-vector-icons/Ionicons";
 import Page from "../Page";
+import { Ionicons } from "@expo/vector-icons";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const Header = styled.View`
-  background-color: red;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: 15px;
-  position: absolute;
-`;
 
 const SubTitle = styled.Text`
   color: white;
   font-size: 14;
-  font-weight: 700;
+  font-weight: 500;
   margin-bottom: 20px;
+`;
+
+const HeaderMiddle = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  padding-right: 15px;
+  padding-bottom: 10px;
+`;
+const PageHeader = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 15px;
 `;
 const Title = styled.Text`
   color: white;
   font-size: 25;
-  font-weight: 600;
+  font-weight: 200;
+  margin-bottom: 30px;
+`;
+
+const PageTitle = styled.Text`
+  color: white;
+  font-size: 25;
+  font-weight: 700;
+  margin-bottom: 30px;
   text-align: center;
-  margin-bottom: 40px;
 `;
 const HasgTags = styled.Text`
   color: white;
   font-size: 14;
-  font-weight: 700;
+  font-weight: 500;
 `;
 
 const HeaderTitles = styled.View`
-  background-color: black;
   padding-top: 30px;
   position: absolute;
+  padding-right: 30px;
+  padding-bottom: 50px;
 `;
 const Weather = styled.View`
   display: flex;
@@ -59,6 +77,18 @@ const Weather = styled.View`
   padding-top: 20px;
   text-align: center;
   background-color: " rgba(0,0,0,0.07)";
+`;
+
+const Header = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const PageHeaderTitles = styled.View`
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `;
 
 const images = [
@@ -340,6 +370,64 @@ class HomeScreen extends React.Component<IProps, IState> {
     const { Date, Week, WeekSchedule } = this.state;
     return (
       <SafeAreaView>
+        <Header>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.dispatch(DrawerActions.toggleDrawer());
+            }}
+          >
+            <Image
+              source={require("../../images/next.png")}
+              style={{
+                marginLeft: 20,
+                width: 20,
+                height: 20,
+                marginBottom: 10
+              }}
+            />
+          </TouchableOpacity>
+          <HeaderMiddle>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Home")}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  marginTop: 7,
+                  fontWeight: "700",
+                  color: "#e0281a",
+                  marginRight: 15
+                }}
+              >
+                THIS WEEKEND
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Discover")}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  marginTop: 7,
+                  fontWeight: "700",
+                  color: "#9e9897",
+                  marginLeft: 15
+                }}
+              >
+                DISCOVER
+              </Text>
+            </TouchableOpacity>
+          </HeaderMiddle>
+          <View style={{ marginRight: 15, marginBottom: 10 }}>
+            <Ionicons
+              name={"ios-search"}
+              size={30}
+              color={"rgba(0,0,0,0.7)"}
+              onPress={() => this.props.navigation.navigate("Search")}
+            />
+          </View>
+        </Header>
         <Weather>
           <Text
             style={{
@@ -420,6 +508,8 @@ class HomeScreen extends React.Component<IProps, IState> {
           horizontal
           pagingEnabled
           style={{}}
+          overScrollMode="never"
+          alwaysBounceHorizontal="false"
         >
           {images.map((image, index) => (
             <TouchableWithoutFeedback
@@ -428,9 +518,8 @@ class HomeScreen extends React.Component<IProps, IState> {
             >
               <Animated.View
                 style={{
-                  height: 550,
                   width: SCREEN_WIDTH,
-                  padding: 15,
+                  paddingTop: 30,
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "flex-end"
@@ -440,31 +529,11 @@ class HomeScreen extends React.Component<IProps, IState> {
                   ref={(image) => (this.allImages[index] = image)}
                   source={image.src}
                   style={{
-                    height: 500,
-                    resizeMode: "cover",
-                    borderRadius: 20
+                    height: 450,
+                    resizeMode: "cover"
                   }}
                 />
-                <Header>
-                  <TouchableOpacity>
-                    <Image
-                      source={require("../../images/back.png")}
-                      style={{ width: 23, height: 23 }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={{ justifyContent: "center", flexDirection: "row" }}
-                  >
-                    <Image
-                      source={require("../../images/share.png")}
-                      style={{ width: 23, height: 23, marginRight: 10 }}
-                    />
-                    <Image
-                      source={require("../../images/heart.png")}
-                      style={{ width: 23, height: 23, marginRight: 10 }}
-                    />
-                  </View>
-                </Header>
+
                 <HeaderTitles>
                   <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
                   <View style={{ width: 220 }}>
@@ -479,6 +548,7 @@ class HomeScreen extends React.Component<IProps, IState> {
         <ScrollView
           style={StyleSheet.absoluteFill}
           pointerEvents={this.state.activeImage ? "auto" : "none"}
+          bounces={false}
         >
           <View
             style={{ flex: 1, zIndex: 1001 }}
@@ -499,18 +569,48 @@ class HomeScreen extends React.Component<IProps, IState> {
                 activeImageStyle
               ]}
             />
-            <TouchableWithoutFeedback onPress={() => this.closeImage()}>
+            <TouchableWithoutFeedback>
               <Animated.View
                 style={[
-                  { position: "absolute", top: 30, right: 30 },
+                  { position: "absolute", marginTop: 20, width: SCREEN_WIDTH },
                   animatedCrossOpacity
                 ]}
               >
-                <Text
-                  style={{ fontSize: 24, fontWeight: "bold", color: "white" }}
-                >
-                  X
-                </Text>
+                <PageHeader>
+                  <TouchableOpacity onPress={() => this.closeImage()}>
+                    <Image
+                      source={require("../../images/back.png")}
+                      style={{
+                        width: 23,
+                        height: 23,
+                        margin: 15
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      flexDirection: "row",
+                      margin: 15
+                    }}
+                  >
+                    <Image
+                      source={require("../../images/share.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                    <Image
+                      source={require("../../images/heart.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                  </View>
+                </PageHeader>
+                <PageHeaderTitles>
+                  <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
+                  <View style={{ width: 220 }}>
+                    <PageTitle>로맨틱 파노라마 갬성 루프탑 추천 6</PageTitle>
+                  </View>
+                  <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
+                </PageHeaderTitles>
               </Animated.View>
             </TouchableWithoutFeedback>
           </View>

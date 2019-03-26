@@ -6,12 +6,27 @@ import {
   Dimensions,
   ScrollView,
   StyleSheet,
-  ImageBackground
+  ImageBackground,
+  TouchableOpacity,
+  Image
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import styled from "styled-components/native";
+import { NavigationScreenProp, DrawerActions } from "react-navigation";
 
-interface IProps {}
+interface IProps {
+  navigation: NavigationScreenProp<any, any>;
+}
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
+
+const HeaderMiddle = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+  padding-right: 15px;
+  padding-bottom: 10px;
+`;
 
 const style = StyleSheet.create({
   category: {
@@ -25,10 +40,74 @@ const style = StyleSheet.create({
   }
 });
 
+const Header = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 class DiscoverScreen extends React.Component<IProps> {
   render() {
     return (
       <SafeAreaView>
+        <Header>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.dispatch(DrawerActions.toggleDrawer());
+            }}
+          >
+            <Image
+              source={require("../../images/next.png")}
+              style={{
+                marginLeft: 20,
+                width: 20,
+                height: 20,
+                marginBottom: 10
+              }}
+            />
+          </TouchableOpacity>
+          <HeaderMiddle>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Home")}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  marginTop: 7,
+                  fontWeight: "700",
+                  color: "#9e9897",
+                  marginRight: 15
+                }}
+              >
+                THIS WEEKEND
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Discover")}
+            >
+              <Text
+                style={{
+                  fontSize: 14,
+                  marginTop: 7,
+                  fontWeight: "700",
+                  color: "#e0281a",
+                  marginLeft: 15
+                }}
+              >
+                DISCOVER
+              </Text>
+            </TouchableOpacity>
+          </HeaderMiddle>
+          <View style={{ marginRight: 15, marginBottom: 10 }}>
+            <Ionicons
+              name={"ios-search"}
+              size={30}
+              color={"rgba(0,0,0,0.7)"}
+              onPress={() => this.props.navigation.navigate("Search")}
+            />
+          </View>
+        </Header>
         <ScrollView>
           <View style={{ margin: 10 }}>
             <View style={{ paddingBottom: 10 }}>

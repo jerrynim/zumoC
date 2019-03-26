@@ -11,9 +11,9 @@ const CardHeader = styled.View`
 const IndexNumber = styled.View`
   margin-top: 20px;
   margin-bottom: 20px;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
-  align-content: center;
+  align-items: center;
 `;
 const InexBox = styled.Text`
   width: 30;
