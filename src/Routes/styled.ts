@@ -3,7 +3,7 @@ import styled from "styled-components/native";
 export const SubTitle = styled.Text`
   color: white;
   font-size: 14;
-  font-weight: 500;
+  font-weight: 700;
   margin-bottom: 20px;
 `;
 
@@ -17,7 +17,7 @@ export const HeaderMiddle = styled.View`
 export const PageHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 15px;
+  padding-top: 40px;
 `;
 export const Title = styled.Text`
   color: white;
@@ -36,7 +36,7 @@ export const PageTitle = styled.Text`
 export const HasgTags = styled.Text`
   color: white;
   font-size: 14;
-  font-weight: 500;
+  font-weight: 700;
 `;
 
 export const HeaderTitles = styled.View`

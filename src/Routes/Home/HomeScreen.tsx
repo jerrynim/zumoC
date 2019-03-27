@@ -36,7 +36,7 @@ import {
 } from "../styled";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-const NAVBAR_HEIGHT = 64;
+const NAVBAR_HEIGHT = 100;
 const STATUS_BAR_HEIGHT = Platform.select({ ios: 20, android: 24 });
 const AnimatedListView = Animated.createAnimatedComponent(ScrollView);
 
@@ -395,11 +395,6 @@ class HomeScreen extends React.Component<IProps, IState> {
       outputRange: [0, -(NAVBAR_HEIGHT - STATUS_BAR_HEIGHT)],
       extrapolate: "clamp"
     });
-    const navbarOpacity = clampedScroll.interpolate({
-      inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
-      outputRange: [1, 0],
-      extrapolate: "clamp"
-    });
 
     return (
       <SafeAreaView>
@@ -602,38 +597,10 @@ class HomeScreen extends React.Component<IProps, IState> {
             <TouchableWithoutFeedback>
               <Animated.View
                 style={[
-                  { position: "absolute", marginTop: 20, width: SCREEN_WIDTH },
+                  { position: "absolute", marginTop: 120, width: SCREEN_WIDTH },
                   animatedCrossOpacity
                 ]}
               >
-                <PageHeader>
-                  <TouchableOpacity onPress={() => this.closeImage()}>
-                    <Image
-                      source={require("../../images/back.png")}
-                      style={{
-                        width: 23,
-                        height: 23,
-                        margin: 15
-                      }}
-                    />
-                  </TouchableOpacity>
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      flexDirection: "row",
-                      margin: 15
-                    }}
-                  >
-                    <Image
-                      source={require("../../images/share.png")}
-                      style={{ width: 23, height: 23, marginRight: 10 }}
-                    />
-                    <Image
-                      source={require("../../images/heart.png")}
-                      style={{ width: 23, height: 23, marginRight: 10 }}
-                    />
-                  </View>
-                </PageHeader>
                 <PageHeaderTitles>
                   <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
                   <View style={{ width: 220 }}>
@@ -656,55 +623,54 @@ class HomeScreen extends React.Component<IProps, IState> {
             <Page />
           </Animated.View>
         </AnimatedListView>
-        <Animated.View
-          style={[
-            styles.navbar,
-            {
-              transform: [{ translateY: navbarTranslate }]
-            }
-          ]}
-        >
-          <Animated.Text style={[styles.title, { opacity: navbarOpacity }]}>
-            PLACES
-          </Animated.Text>
-        </Animated.View>
+        {this.state.activeImage && (
+          <Animated.View
+            style={[
+              {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                height: NAVBAR_HEIGHT
+              },
+              {
+                transform: [{ translateY: navbarTranslate }]
+              }
+            ]}
+          >
+            <PageHeader>
+              <TouchableOpacity onPress={() => this.closeImage()}>
+                <Image
+                  source={require("../../images/back.png")}
+                  style={{
+                    width: 23,
+                    height: 23,
+                    margin: 15
+                  }}
+                />
+              </TouchableOpacity>
+              <View
+                style={{
+                  justifyContent: "center",
+                  flexDirection: "row",
+                  margin: 15
+                }}
+              >
+                <Image
+                  source={require("../../images/share.png")}
+                  style={{ width: 23, height: 23, marginRight: 10 }}
+                />
+                <Image
+                  source={require("../../images/heart.png")}
+                  style={{ width: 23, height: 23, marginRight: 10 }}
+                />
+              </View>
+            </PageHeader>
+          </Animated.View>
+        )}
       </SafeAreaView>
     );
   }
 }
-const styles = StyleSheet.create({
-  fill: {
-    flex: 1
-  },
-  navbar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    alignItems: "center",
-    backgroundColor: "white",
-    borderBottomColor: "#dedede",
-    borderBottomWidth: 1,
-    height: NAVBAR_HEIGHT,
-    justifyContent: "center",
-    paddingTop: STATUS_BAR_HEIGHT
-  },
-  contentContainer: {
-    paddingTop: NAVBAR_HEIGHT
-  },
-  title: {
-    color: "#333333"
-  },
-  row: {
-    height: 300,
-    width: null,
-    marginBottom: 1,
-    padding: 16,
-    backgroundColor: "transparent"
-  },
-  rowText: {
-    color: "white",
-    fontSize: 18
-  }
-});
+
 export default HomeScreen;
