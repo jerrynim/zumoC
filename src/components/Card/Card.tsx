@@ -1,6 +1,15 @@
 import React from "react";
 import styled from "styled-components/native";
-import { Image, Dimensions } from "react-native";
+import {
+  Image,
+  Dimensions,
+  Animated,
+  TouchableOpacity,
+  View,
+  Text,
+  StyleSheet
+} from "react-native";
+import Collapsible from "react-native-collapsible";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -83,7 +92,16 @@ const GreyBar = styled.View`
   background-color: #f1f2f6;
 `;
 
-class Card extends React.Component {
+interface IState {
+  collapsed: boolean;
+}
+class Card extends React.Component<IState> {
+  public state = {
+    collapsed: false
+  };
+  toggleExpanded = () => {
+    this.setState({ collapsed: !this.state.collapsed });
+  };
   public render() {
     return (
       <Container>
@@ -142,12 +160,81 @@ class Card extends React.Component {
             </DesTextIn>
           </DesText>
         </Description>
-        <MoreInfo>
-          <MoreInfoText>MORE INFO ⌵</MoreInfoText>
-        </MoreInfo>
+        <Collapsible collapsed={!this.state.collapsed} align="center">
+          <View style={styles.content}>
+            <Text>
+              Bacon ipsum dolor amet chuck turducken landjaeger tongue spare
+              ribs
+            </Text>
+          </View>
+        </Collapsible>
+        <TouchableOpacity onPress={this.toggleExpanded}>
+          <MoreInfo>
+            <MoreInfoText>
+              MORE INFO {this.state.collapsed ? "⌃" : "⌵"}
+            </MoreInfoText>
+          </MoreInfo>
+        </TouchableOpacity>
+
         <GreyBar />
       </Container>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  title: {
+    textAlign: "center",
+    fontSize: 22,
+    fontWeight: "300",
+    marginBottom: 20
+  },
+  header: {
+    backgroundColor: "#F5FCFF",
+    padding: 10
+  },
+  headerText: {
+    textAlign: "center",
+    fontSize: 16,
+    fontWeight: "500"
+  },
+  content: {
+    padding: 20,
+    backgroundColor: "#fff"
+  },
+  active: {
+    backgroundColor: "rgba(255,255,255,1)"
+  },
+  inactive: {
+    backgroundColor: "rgba(245,252,255,1)"
+  },
+  selectors: {
+    marginBottom: 10,
+    flexDirection: "row",
+    justifyContent: "center"
+  },
+  selector: {
+    backgroundColor: "#F5FCFF",
+    padding: 10
+  },
+  activeSelector: {
+    fontWeight: "bold"
+  },
+  selectTitle: {
+    fontSize: 14,
+    fontWeight: "500",
+    padding: 10
+  },
+  multipleToggle: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginVertical: 30,
+    alignItems: "center"
+  },
+  multipleToggle__title: {
+    fontSize: 16,
+    marginRight: 8
+  }
+});
+
 export default Card;

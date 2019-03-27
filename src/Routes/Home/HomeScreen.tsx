@@ -108,7 +108,7 @@ class HomeScreen extends React.Component<IProps, IState> {
     };
   }
 
-  public allImages = { images };
+  public allImages = {};
   public oldPosition = { x: 0, y: 0, width: 0, height: 0 };
   public position = new Animated.ValueXY();
   public dimensions = new Animated.ValueXY();
@@ -121,12 +121,16 @@ class HomeScreen extends React.Component<IProps, IState> {
   public _scrollValue = 0;
   public _scrollEndTimer = 0;
   openImage = (index) => {
-    this.allImages[index].measure((_, __, width, height, pageX, pageY) => {
+    const image: Image = this.allImages[index];
+    image.measure((_, __, width, height, pageX, pageY) => {
       this.oldPosition.x = pageX;
       this.oldPosition.y = pageY;
       this.oldPosition.width = width;
       this.oldPosition.height = height;
 
+      /*console.log(_,__,width,height,pageX,pageY);
+      46 30 283 450 46 301.3333435058594
+      */
       this.position.setValue({
         x: pageX,
         y: pageY
@@ -147,23 +151,23 @@ class HomeScreen extends React.Component<IProps, IState> {
               Animated.parallel([
                 Animated.timing(this.position.x, {
                   toValue: dPageX,
-                  duration: 300
+                  duration: 500
                 }),
                 Animated.timing(this.position.y, {
                   toValue: dPageY,
-                  duration: 300
+                  duration: 500
                 }),
                 Animated.timing(this.dimensions.x, {
                   toValue: dWidth,
-                  duration: 300
+                  duration: 500
                 }),
                 Animated.timing(this.dimensions.y, {
                   toValue: dHeight,
-                  duration: 300
+                  duration: 500
                 }),
                 Animated.timing(this.animation, {
                   toValue: 1,
-                  duration: 300
+                  duration: 500
                 })
               ]).start();
             }
@@ -177,23 +181,23 @@ class HomeScreen extends React.Component<IProps, IState> {
     Animated.parallel([
       Animated.timing(this.position.x, {
         toValue: this.oldPosition.x,
-        duration: 300
+        duration: 500
       }),
       Animated.timing(this.position.y, {
         toValue: this.oldPosition.y,
-        duration: 250
+        duration: 500
       }),
       Animated.timing(this.dimensions.x, {
         toValue: this.oldPosition.width,
-        duration: 250
+        duration: 500
       }),
       Animated.timing(this.dimensions.y, {
         toValue: this.oldPosition.height,
-        duration: 250
+        duration: 500
       }),
       Animated.timing(this.animation, {
         toValue: 0,
-        duration: 250
+        duration: 500
       })
     ]).start(() => {
       this.setState({
@@ -387,7 +391,6 @@ class HomeScreen extends React.Component<IProps, IState> {
       opacity: this.animation
     };
     const { Date, Week, WeekSchedule } = this.state;
-
     const { clampedScroll } = this.state;
 
     const navbarTranslate = clampedScroll.interpolate({
@@ -561,68 +564,77 @@ class HomeScreen extends React.Component<IProps, IState> {
             </TouchableWithoutFeedback>
           ))}
         </ScrollView>
-        <AnimatedListView
-          style={StyleSheet.absoluteFill}
-          pointerEvents={this.state.activeImage ? "auto" : "none"}
-          scrollEventThrottle={16}
-          bounces={false}
-          onMomentumScrollBegin={this._onMomentumScrollBegin}
-          onMomentumScrollEnd={this._onMomentumScrollEnd}
-          onScrollEndDrag={this._onScrollEndDrag}
-          onScroll={Animated.event(
-            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
-            { useNativeDriver: true }
-          )}
-        >
-          <View
-            style={{ flex: 1, zIndex: 1001, paddingTop: 40 }}
-            ref={(view) => (this.viewImage = view)}
-            /*나타날 뷰 */
+        {this.state.activeImage && (
+          <AnimatedListView
+            style={StyleSheet.absoluteFill}
+            pointerEvents={this.state.activeImage ? "auto" : "none"}
+            scrollEventThrottle={16}
+            bounces={false}
+            onMomentumScrollBegin={this._onMomentumScrollBegin}
+            onMomentumScrollEnd={this._onMomentumScrollEnd}
+            onScrollEndDrag={this._onScrollEndDrag}
+            onScroll={Animated.event(
+              [
+                { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }
+              ],
+              { useNativeDriver: true }
+            )}
           >
-            <Animated.Image
-              source={
-                this.state.activeImage ? this.state.activeImage.src : null
-              }
+            <View
+              style={{ flex: 1, zIndex: 1001, paddingTop: 40 }}
+              ref={(view) => (this.viewImage = view)}
+              /*나타날 뷰 */
+            >
+              <Animated.Image
+                source={
+                  this.state.activeImage ? this.state.activeImage.src : null
+                }
+                style={[
+                  {
+                    resizeMode: "cover",
+                    top: 0,
+                    left: 0,
+                    height: null,
+                    width: null
+                  },
+                  activeImageStyle
+                ]}
+              />
+              <TouchableWithoutFeedback>
+                <Animated.View
+                  style={[
+                    {
+                      position: "absolute",
+                      marginTop: 120,
+                      width: SCREEN_WIDTH
+                    },
+                    animatedCrossOpacity
+                  ]}
+                >
+                  <PageHeaderTitles>
+                    <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
+                    <View style={{ width: 220 }}>
+                      <PageTitle>로맨틱 파노라마 갬성 루프탑 추천 6</PageTitle>
+                    </View>
+                    <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
+                  </PageHeaderTitles>
+                </Animated.View>
+              </TouchableWithoutFeedback>
+            </View>
+            <Animated.View
               style={[
                 {
-                  resizeMode: "cover",
-                  top: 0,
-                  left: 0,
-                  height: null,
-                  width: null
+                  flex: 1,
+                  zIndex: 1000
                 },
-                activeImageStyle
+                animatedContentStyle
               ]}
-            />
-            <TouchableWithoutFeedback>
-              <Animated.View
-                style={[
-                  { position: "absolute", marginTop: 120, width: SCREEN_WIDTH },
-                  animatedCrossOpacity
-                ]}
-              >
-                <PageHeaderTitles>
-                  <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
-                  <View style={{ width: 220 }}>
-                    <PageTitle>로맨틱 파노라마 갬성 루프탑 추천 6</PageTitle>
-                  </View>
-                  <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
-                </PageHeaderTitles>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          </View>
-          <Animated.View
-            style={[
-              {
-                flex: 1,
-                zIndex: 1000
-              },
-              animatedContentStyle
-            ]}
-          >
-            <Page />
-          </Animated.View>
-        </AnimatedListView>
+            >
+              <Page />
+            </Animated.View>
+          </AnimatedListView>
+        )}
+
         {this.state.activeImage && (
           <Animated.View
             style={[
