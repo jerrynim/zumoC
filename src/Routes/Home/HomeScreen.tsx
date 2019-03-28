@@ -34,6 +34,7 @@ import {
   PageTitle,
   Header
 } from "../styled";
+import Discover from "../Discover";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 const NAVBAR_HEIGHT = 100;
@@ -63,6 +64,13 @@ interface IState {
   scrollAnim: Animated.Value;
   offsetAnim: Animated.Value;
   clampedScroll: Animated.AnimatedDiffClamp;
+  active: number;
+  xTabOne: number;
+  xTabTwo: number;
+  translateX: Animated.Value;
+  translateXTabOne: Animated.Value;
+  translateXTabTwo: Animated.Value;
+  translateY: number;
 }
 
 interface Schedule {
@@ -104,7 +112,14 @@ class HomeScreen extends React.Component<IProps, IState> {
       weather: "",
       GeoName: "",
       airPollution: 0,
-      WeekSchedule: [{ id: 0, day: "", dayName: "", temp: 0, weather: "" }]
+      WeekSchedule: [{ id: 0, day: "", dayName: "", temp: 0, weather: "" }],
+      active: 0,
+      xTabOne: 0,
+      xTabTwo: 0,
+      translateX: new Animated.Value(0),
+      translateXTabOne: new Animated.Value(0),
+      translateXTabTwo: new Animated.Value(SCREEN_WIDTH),
+      translateY: -1000
     };
   }
 
@@ -206,6 +221,41 @@ class HomeScreen extends React.Component<IProps, IState> {
     });
   };
 
+  handleSlide = (value) => {
+    let { active, translateX, translateXTabOne, translateXTabTwo } = this.state;
+    Animated.spring(translateX, {
+      bounciness: 0,
+      toValue: value,
+      speed: 10
+    }).start();
+    if (active === 0) {
+      Animated.parallel([
+        Animated.spring(translateXTabOne, {
+          bounciness: 0,
+          toValue: 0,
+          speed: 10
+        }),
+        Animated.spring(translateXTabTwo, {
+          bounciness: 0,
+          toValue: SCREEN_WIDTH,
+          speed: 10
+        })
+      ]).start();
+    } else {
+      Animated.parallel([
+        Animated.spring(translateXTabOne, {
+          bounciness: 0,
+          toValue: -SCREEN_WIDTH,
+          speed: 10
+        }),
+        Animated.spring(translateXTabTwo, {
+          bounciness: 0,
+          toValue: 0,
+          speed: 10
+        })
+      ]).start();
+    }
+  };
   componentDidMount() {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -361,6 +411,16 @@ class HomeScreen extends React.Component<IProps, IState> {
   };
 
   render() {
+    const {
+      clampedScroll,
+
+      active,
+      translateXTabOne,
+      translateXTabTwo,
+      translateX,
+      translateY
+    } = this.state;
+
     const activeImageStyle = {
       width: SCREEN_WIDTH,
       height: 300,
@@ -391,7 +451,6 @@ class HomeScreen extends React.Component<IProps, IState> {
       opacity: this.animation
     };
     const { Date, Week, WeekSchedule } = this.state;
-    const { clampedScroll } = this.state;
 
     const navbarTranslate = clampedScroll.interpolate({
       inputRange: [0, NAVBAR_HEIGHT - STATUS_BAR_HEIGHT],
@@ -412,45 +471,61 @@ class HomeScreen extends React.Component<IProps, IState> {
               style={{
                 marginLeft: 20,
                 width: 20,
-                height: 20,
-                marginBottom: 10
+                height: 20
               }}
             />
           </TouchableOpacity>
           <HeaderMiddle>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Home")}
+              style={{
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+              onLayout={(event) =>
+                this.setState({
+                  xTabOne: event.nativeEvent.layout.x
+                })
+              }
+              onPress={() =>
+                this.setState({ active: 0 }, () => this.handleSlide(0))
+              }
             >
               <Text
                 style={{
                   fontSize: 14,
                   marginTop: 7,
                   fontWeight: "700",
-                  color: "#e0281a",
-                  marginRight: 15
+                  color: active === 0 ? "#e0281a" : "#9e9897",
+                  marginRight: 30
                 }}
               >
                 THIS WEEKEND
               </Text>
             </TouchableOpacity>
-
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate("Discover")}
+              style={{ justifyContent: "center", alignItems: "center" }}
+              onLayout={(event) =>
+                this.setState({
+                  xTabTwo: event.nativeEvent.layout.x
+                })
+              }
+              onPress={() =>
+                this.setState({ active: 1 }, () => this.handleSlide(115))
+              }
             >
               <Text
                 style={{
                   fontSize: 14,
                   marginTop: 7,
                   fontWeight: "700",
-                  color: "#9e9897",
-                  marginLeft: 15
+                  color: active === 1 ? "#e0281a" : "#9e9897"
                 }}
               >
                 DISCOVER
               </Text>
             </TouchableOpacity>
           </HeaderMiddle>
-          <View style={{ marginRight: 15, marginBottom: 10 }}>
+          <View style={{ marginRight: 15 }}>
             <Ionicons
               name={"ios-search"}
               size={30}
@@ -459,227 +534,293 @@ class HomeScreen extends React.Component<IProps, IState> {
             />
           </View>
         </Header>
-        <Weather>
-          <Text
-            style={{
-              color: "#c0392b",
-              fontSize: 25,
-              textAlign: "center"
-            }}
-          >
-            {Date} - {Week}
-          </Text>
-          <Text
-            style={{
-              marginTop: 10,
-              color: "black",
-              fontSize: 12,
-              textAlign: "center",
-              marginBottom: 10
-            }}
-          >
-            {this.state.GeoName}
-          </Text>
+        <Animated.View
+          style={{
+            width: 10,
+            height: 10,
+            left: "35%",
+            backgroundColor: "#007aff",
+
+            transform: [
+              {
+                translateX
+              }
+            ]
+          }}
+        />
+        <View>
           <View
             style={{
+              height: 3,
               width: SCREEN_WIDTH,
-              height: 70,
-              paddingLeft: 20,
-              paddingRight: 20,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center"
+              backgroundColor: "rgba(0,0,0,0.25)"
             }}
+          />
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  translateX: translateXTabOne
+                }
+              ]
+            }}
+            onLayout={(event) =>
+              this.setState({
+                translateY: event.nativeEvent.layout.height
+              })
+            }
           >
-            {WeekSchedule.map((schedule) => {
-              if (schedule.weather === "Rain") {
-                return (
-                  <View style={{ alignItems: "center" }} key={schedule.id}>
-                    <Text style={{ color: "#192a56" }}>{schedule.dayName}</Text>
-                    <Icon name={"ios-rainy"} size={20} />
-                    <Text>{schedule.temp}</Text>
-                  </View>
-                );
-              } else if (schedule.weather === "Clear") {
-                return (
-                  <View style={{ alignItems: "center" }} key={schedule.id}>
-                    <Text style={{ color: "#192a56" }}>{schedule.dayName}</Text>
-                    <Icon name={"md-sunny"} size={20} />
-                    <Text>{schedule.temp}</Text>
-                  </View>
-                );
-              } else if (schedule.weather === "Clouds") {
-                return (
-                  <View style={{ alignItems: "center" }} key={schedule.id}>
-                    <Text style={{ color: "#192a56" }}>{schedule.dayName}</Text>
-                    <Icon name={"ios-cloud-outline"} size={20} />
-                    <Text>{schedule.temp}</Text>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={{ alignItems: "center" }} key={schedule.id}>
-                    <Text style={{ color: "#192a56" }}>{schedule.dayName}</Text>
-                    <Text>{schedule.temp}</Text>
-                  </View>
-                );
-              }
-            })}
-          </View>
-          <View style={{ height: 30 }}>
-            <this.airPoullutionView />
-          </View>
-        </Weather>
-        <ScrollView horizontal pagingEnabled overScrollMode="never">
-          {images.map((image, index) => (
-            <TouchableWithoutFeedback
-              onPress={() => this.openImage(index)}
-              key={image.id}
-            >
-              <Animated.View
+            <Weather>
+              <Text
                 style={{
-                  width: SCREEN_WIDTH,
-                  paddingTop: 30,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "flex-end"
+                  color: "#c0392b",
+                  fontSize: 25,
+                  textAlign: "center"
                 }}
               >
-                <Image
-                  ref={(CImage) => (this.allImages[index] = CImage)}
-                  source={image.src}
-                  style={{
-                    height: 450,
-                    resizeMode: "cover"
-                  }}
-                />
-                <HeaderTitles>
-                  <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
-                  <View style={{ width: 220 }}>
-                    <Title>로맨틱 파노라마 갬성 루프탑 추천 6</Title>
-                  </View>
-                  <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
-                </HeaderTitles>
-              </Animated.View>
-            </TouchableWithoutFeedback>
-          ))}
-        </ScrollView>
-        {this.state.activeImage && (
-          <AnimatedListView
-            style={StyleSheet.absoluteFill}
-            pointerEvents={this.state.activeImage ? "auto" : "none"}
-            scrollEventThrottle={16}
-            bounces={false}
-            onMomentumScrollBegin={this._onMomentumScrollBegin}
-            onMomentumScrollEnd={this._onMomentumScrollEnd}
-            onScrollEndDrag={this._onScrollEndDrag}
-            onScroll={Animated.event(
-              [
-                { nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }
-              ],
-              { useNativeDriver: true }
-            )}
-          >
-            <View
-              style={{ flex: 1, zIndex: 1001, paddingTop: 40 }}
-              ref={(view) => (this.viewImage = view)}
-              /*나타날 뷰 */
-            >
-              <Animated.Image
-                source={
-                  this.state.activeImage ? this.state.activeImage.src : null
-                }
-                style={[
-                  {
-                    resizeMode: "cover",
-                    top: 0,
-                    left: 0,
-                    height: null,
-                    width: null
-                  },
-                  activeImageStyle
-                ]}
-              />
-              <TouchableWithoutFeedback>
+                {Date} - {Week}
+              </Text>
+              <Text
+                style={{
+                  marginTop: 10,
+                  color: "black",
+                  fontSize: 12,
+                  textAlign: "center",
+                  marginBottom: 10
+                }}
+              >
+                {this.state.GeoName}
+              </Text>
+              <View
+                style={{
+                  width: SCREEN_WIDTH,
+                  height: 70,
+                  paddingLeft: 20,
+                  paddingRight: 20,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center"
+                }}
+              >
+                {WeekSchedule.map((schedule) => {
+                  if (schedule.weather === "Rain") {
+                    return (
+                      <View style={{ alignItems: "center" }} key={schedule.id}>
+                        <Text style={{ color: "#192a56" }}>
+                          {schedule.dayName}
+                        </Text>
+                        <Icon name={"ios-rainy"} size={20} />
+                        <Text>{schedule.temp}</Text>
+                      </View>
+                    );
+                  } else if (schedule.weather === "Clear") {
+                    return (
+                      <View style={{ alignItems: "center" }} key={schedule.id}>
+                        <Text style={{ color: "#192a56" }}>
+                          {schedule.dayName}
+                        </Text>
+                        <Icon name={"md-sunny"} size={20} />
+                        <Text>{schedule.temp}</Text>
+                      </View>
+                    );
+                  } else if (schedule.weather === "Clouds") {
+                    return (
+                      <View style={{ alignItems: "center" }} key={schedule.id}>
+                        <Text style={{ color: "#192a56" }}>
+                          {schedule.dayName}
+                        </Text>
+                        <Icon name={"ios-cloud-outline"} size={20} />
+                        <Text>{schedule.temp}</Text>
+                      </View>
+                    );
+                  } else {
+                    return (
+                      <View style={{ alignItems: "center" }} key={schedule.id}>
+                        <Text style={{ color: "#192a56" }}>
+                          {schedule.dayName}
+                        </Text>
+                        <Text>{schedule.temp}</Text>
+                      </View>
+                    );
+                  }
+                })}
+              </View>
+              <View style={{ height: 30 }}>
+                <this.airPoullutionView />
+              </View>
+            </Weather>
+            <ScrollView horizontal pagingEnabled overScrollMode="never">
+              {images.map((image, index) => (
+                <TouchableWithoutFeedback
+                  onPress={() => this.openImage(index)}
+                  key={image.id}
+                >
+                  <Animated.View
+                    style={{
+                      width: SCREEN_WIDTH,
+                      paddingTop: 30,
+                      flexDirection: "row",
+                      justifyContent: "center",
+                      alignItems: "flex-end"
+                    }}
+                  >
+                    <Image
+                      ref={(CImage) => (this.allImages[index] = CImage)}
+                      source={image.src}
+                      style={{
+                        height: 450,
+                        resizeMode: "cover"
+                      }}
+                    />
+                    <HeaderTitles>
+                      <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
+                      <View style={{ width: 220 }}>
+                        <Title>로맨틱 파노라마 갬성 루프탑 추천 6</Title>
+                      </View>
+                      <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
+                    </HeaderTitles>
+                  </Animated.View>
+                </TouchableWithoutFeedback>
+              ))}
+            </ScrollView>
+            {this.state.activeImage && (
+              <AnimatedListView
+                style={StyleSheet.absoluteFill}
+                pointerEvents={this.state.activeImage ? "auto" : "none"}
+                scrollEventThrottle={16}
+                bounces={false}
+                onMomentumScrollBegin={this._onMomentumScrollBegin}
+                onMomentumScrollEnd={this._onMomentumScrollEnd}
+                onScrollEndDrag={this._onScrollEndDrag}
+                onScroll={Animated.event(
+                  [
+                    {
+                      nativeEvent: {
+                        contentOffset: { y: this.state.scrollAnim }
+                      }
+                    }
+                  ],
+                  { useNativeDriver: true }
+                )}
+              >
+                <View
+                  style={{ flex: 1, zIndex: 1001, paddingTop: 40 }}
+                  ref={(view) => (this.viewImage = view)}
+                  /*나타날 뷰 */
+                >
+                  <Animated.Image
+                    source={
+                      this.state.activeImage ? this.state.activeImage.src : null
+                    }
+                    style={[
+                      {
+                        resizeMode: "cover",
+                        top: 0,
+                        left: 0,
+                        height: null,
+                        width: null
+                      },
+                      activeImageStyle
+                    ]}
+                  />
+                  <TouchableWithoutFeedback>
+                    <Animated.View
+                      style={[
+                        {
+                          position: "absolute",
+                          marginTop: 120,
+                          width: SCREEN_WIDTH
+                        },
+                        animatedCrossOpacity
+                      ]}
+                    >
+                      <PageHeaderTitles>
+                        <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
+                        <View style={{ width: 220 }}>
+                          <PageTitle>
+                            로맨틱 파노라마 갬성 루프탑 추천 6
+                          </PageTitle>
+                        </View>
+                        <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
+                      </PageHeaderTitles>
+                    </Animated.View>
+                  </TouchableWithoutFeedback>
+                </View>
                 <Animated.View
                   style={[
                     {
-                      position: "absolute",
-                      marginTop: 120,
-                      width: SCREEN_WIDTH
+                      flex: 1,
+                      zIndex: 1000
                     },
-                    animatedCrossOpacity
+                    animatedContentStyle
                   ]}
                 >
-                  <PageHeaderTitles>
-                    <SubTitle>루프탑에서 봄디브 한 잔해~</SubTitle>
-                    <View style={{ width: 220 }}>
-                      <PageTitle>로맨틱 파노라마 갬성 루프탑 추천 6</PageTitle>
-                    </View>
-                    <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
-                  </PageHeaderTitles>
+                  <Page />
                 </Animated.View>
-              </TouchableWithoutFeedback>
-            </View>
-            <Animated.View
-              style={[
-                {
-                  flex: 1,
-                  zIndex: 1000
-                },
-                animatedContentStyle
-              ]}
-            >
-              <Page />
-            </Animated.View>
-          </AnimatedListView>
-        )}
+              </AnimatedListView>
+            )}
 
-        {this.state.activeImage && (
-          <Animated.View
-            style={[
-              {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                right: 0,
-                height: NAVBAR_HEIGHT
-              },
-              {
-                transform: [{ translateY: navbarTranslate }]
-              }
-            ]}
-          >
-            <PageHeader>
-              <TouchableOpacity onPress={() => this.closeImage()}>
-                <Image
-                  source={require("../../images/back.png")}
-                  style={{
-                    width: 23,
-                    height: 23,
-                    margin: 15
-                  }}
-                />
-              </TouchableOpacity>
-              <View
-                style={{
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  margin: 15
-                }}
+            {this.state.activeImage && (
+              <Animated.View
+                style={[
+                  {
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: NAVBAR_HEIGHT
+                  },
+                  {
+                    transform: [{ translateY: navbarTranslate }]
+                  }
+                ]}
               >
-                <Image
-                  source={require("../../images/share.png")}
-                  style={{ width: 23, height: 23, marginRight: 10 }}
-                />
-                <Image
-                  source={require("../../images/heart.png")}
-                  style={{ width: 23, height: 23, marginRight: 10 }}
-                />
-              </View>
-            </PageHeader>
+                <PageHeader>
+                  <TouchableOpacity onPress={() => this.closeImage()}>
+                    <Image
+                      source={require("../../images/back.png")}
+                      style={{
+                        width: 23,
+                        height: 23,
+                        margin: 15
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      flexDirection: "row",
+                      margin: 15
+                    }}
+                  >
+                    <Image
+                      source={require("../../images/share.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                    <Image
+                      source={require("../../images/heart.png")}
+                      style={{ width: 23, height: 23, marginRight: 10 }}
+                    />
+                  </View>
+                </PageHeader>
+              </Animated.View>
+            )}
           </Animated.View>
-        )}
+          <Animated.View
+            style={{
+              transform: [
+                {
+                  translateX: translateXTabTwo
+                },
+                {
+                  translateY: -translateY
+                }
+              ]
+            }}
+          >
+            <Discover navigation={this.props.navigation} />
+          </Animated.View>
+        </View>
       </SafeAreaView>
     );
   }
