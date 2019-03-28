@@ -1,14 +1,6 @@
 import React from "react";
 import styled from "styled-components/native";
-import {
-  Image,
-  Dimensions,
-  Animated,
-  TouchableOpacity,
-  View,
-  Text,
-  StyleSheet
-} from "react-native";
+import { Image, Dimensions, TouchableOpacity } from "react-native";
 import Collapsible from "react-native-collapsible";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
@@ -67,6 +59,12 @@ const DesText = styled.View`
   padding-left: 10px;
 `;
 
+const MITextIn = styled.Text`
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 15px;
+  margin-bottom: 3px;
+`;
+
 const DesTextIn = styled.Text`
   color: rgba(0, 0, 0, 0.65);
   font-size: 15px;
@@ -90,6 +88,22 @@ const GreyBar = styled.View`
   width: ${SCREEN_WIDTH};
   height: 13px;
   background-color: #f1f2f6;
+`;
+
+const MIBox = styled.View`
+  width: ${SCREEN_WIDTH - 100};
+  margin-left: 20px;
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-content: center;
+`;
+const MIBoxs = styled.View`
+  margin-left: 10px;
+  margin-right: 10px;
+  border-top-width: 1px;
+  border-top-color: rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
 `;
 
 interface IState {
@@ -161,12 +175,55 @@ class Card extends React.Component<IState> {
           </DesText>
         </Description>
         <Collapsible collapsed={!this.state.collapsed} align="center">
-          <View style={styles.content}>
-            <Text>
-              Bacon ipsum dolor amet chuck turducken landjaeger tongue spare
-              ribs
-            </Text>
-          </View>
+          <MIBoxs>
+            <MIBox>
+              <Image
+                source={require("../../images/placeholder.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <DesText>
+                <DesTextIn>서울 송파구 잠실로 180</DesTextIn>
+              </DesText>
+            </MIBox>
+            <MIBox>
+              <Image
+                source={require("../../images/time.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <DesText>
+                <DesTextIn>매일 오전 9시 - 밤 11시</DesTextIn>
+              </DesText>
+            </MIBox>
+            <MIBox>
+              <Image
+                source={require("../../images/banknote.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <DesText>
+                <MITextIn>아메리카노 4500원</MITextIn>
+                <MITextIn>베이컨 버섯 크림 파스타 1만 8,000원</MITextIn>
+                <MITextIn>제이바웃 브런치 1만 9,800원 </MITextIn>
+              </DesText>
+            </MIBox>
+            <MIBox>
+              <Image
+                source={require("../../images/call.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <DesText>
+                <DesTextIn>02-424-8662</DesTextIn>
+              </DesText>
+            </MIBox>
+            <MIBox>
+              <Image
+                source={require("../../images/parking.png")}
+                style={{ width: 20, height: 20 }}
+              />
+              <DesText>
+                <DesTextIn>주차 불가</DesTextIn>
+              </DesText>
+            </MIBox>
+          </MIBoxs>
         </Collapsible>
         <TouchableOpacity onPress={this.toggleExpanded}>
           <MoreInfo>
@@ -181,60 +238,5 @@ class Card extends React.Component<IState> {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  title: {
-    textAlign: "center",
-    fontSize: 22,
-    fontWeight: "300",
-    marginBottom: 20
-  },
-  header: {
-    backgroundColor: "#F5FCFF",
-    padding: 10
-  },
-  headerText: {
-    textAlign: "center",
-    fontSize: 16,
-    fontWeight: "500"
-  },
-  content: {
-    padding: 20,
-    backgroundColor: "#fff"
-  },
-  active: {
-    backgroundColor: "rgba(255,255,255,1)"
-  },
-  inactive: {
-    backgroundColor: "rgba(245,252,255,1)"
-  },
-  selectors: {
-    marginBottom: 10,
-    flexDirection: "row",
-    justifyContent: "center"
-  },
-  selector: {
-    backgroundColor: "#F5FCFF",
-    padding: 10
-  },
-  activeSelector: {
-    fontWeight: "bold"
-  },
-  selectTitle: {
-    fontSize: 14,
-    fontWeight: "500",
-    padding: 10
-  },
-  multipleToggle: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginVertical: 30,
-    alignItems: "center"
-  },
-  multipleToggle__title: {
-    fontSize: 16,
-    marginRight: 8
-  }
-});
 
 export default Card;
