@@ -92,6 +92,7 @@ const MyDrawerNavigator = createDrawerNavigator(
     }
   },
   {
+    initialRouteName: "MyPage",
     contentComponent: DrawerComponent
   }
 );

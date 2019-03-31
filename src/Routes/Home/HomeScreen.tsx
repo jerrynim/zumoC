@@ -139,15 +139,14 @@ class HomeScreen extends React.Component<IProps, IState> {
     const image: Image = this.allImages[index];
     image.measure((_, __, width, height, pageX, pageY) => {
       this.oldPosition.x = pageX;
-      this.oldPosition.y = pageY;
+      this.oldPosition.y = pageY - 45;
       this.oldPosition.width = width;
       this.oldPosition.height = height;
-      /*console.log(x,y,width,height,pageX,pageY);
-      46 30 283 450 46 301.3333435058594
-      */
+      console.log(_, __, width, height, pageX, pageY);
+      /*46 30 283 450 46 301.3333282470703*/
       this.position.setValue({
         x: pageX,
-        y: pageY
+        y: pageY - 45
       });
 
       this.dimensions.setValue({
@@ -456,105 +455,117 @@ class HomeScreen extends React.Component<IProps, IState> {
 
     return (
       <SafeAreaView>
-        <Header>
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.dispatch(DrawerActions.toggleDrawer());
-            }}
-          >
-            <Image
-              source={require("../../images/next.png")}
-              style={{
-                marginLeft: 20,
-                width: 20,
-                height: 20
-              }}
-            />
-          </TouchableOpacity>
-          <HeaderMiddle>
-            <TouchableOpacity
-              style={{
-                justifyContent: "center",
-                alignItems: "center"
-              }}
-              onLayout={(event) =>
-                this.setState({
-                  xTabOne: event.nativeEvent.layout.x
-                })
-              }
-              onPress={() =>
-                this.setState({ active: 0 }, () => this.handleSlide(0))
-              }
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginTop: 7,
-                  fontWeight: "700",
-                  color: active === 0 ? "#e0281a" : "#9e9897",
-                  marginRight: 30
-                }}
-              >
-                THIS WEEKEND
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{ justifyContent: "center", alignItems: "center" }}
-              onLayout={(event) =>
-                this.setState({
-                  xTabTwo: event.nativeEvent.layout.x
-                })
-              }
-              onPress={() =>
-                this.setState({ active: 1 }, () => this.handleSlide(115))
-              }
-            >
-              <Text
-                style={{
-                  fontSize: 14,
-                  marginTop: 7,
-                  fontWeight: "700",
-                  color: active === 1 ? "#e0281a" : "#9e9897"
-                }}
-              >
-                DISCOVER
-              </Text>
-            </TouchableOpacity>
-          </HeaderMiddle>
-          <View style={{ marginRight: 15 }}>
-            <Ionicons
-              name={"ios-search"}
-              size={30}
-              color={"rgba(0,0,0,0.7)"}
-              onPress={() => this.props.navigation.navigate("Search")}
-            />
-          </View>
-        </Header>
-        <Animated.View
-          style={{
-            width: 10,
-            height: 10,
-            left: "35%",
-            backgroundColor: "#007aff",
-
-            transform: [
-              {
-                translateX
-              }
-            ]
-          }}
-        />
-
         <View
           style={{
-            height: 3,
+            position: "absolute",
+            paddingTop: 40,
             width: SCREEN_WIDTH,
-            backgroundColor: "rgba(0,0,0,0.25)"
+            zIndex: this.state.activeImage ? 1900 : 2002
           }}
-        />
+        >
+          <Header>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.dispatch(DrawerActions.toggleDrawer());
+              }}
+            >
+              <Image
+                source={require("../../images/next.png")}
+                style={{
+                  marginLeft: 20,
+                  width: 20,
+                  height: 20
+                }}
+              />
+            </TouchableOpacity>
+            <HeaderMiddle>
+              <TouchableOpacity
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+                onLayout={(event) =>
+                  this.setState({
+                    xTabOne: event.nativeEvent.layout.x
+                  })
+                }
+                onPress={() =>
+                  this.setState({ active: 0 }, () => this.handleSlide(0))
+                }
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginTop: 7,
+                    fontWeight: "700",
+                    color: active === 0 ? "#e0281a" : "#9e9897",
+                    marginRight: 30
+                  }}
+                >
+                  THIS WEEKEND
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ justifyContent: "center", alignItems: "center" }}
+                onLayout={(event) =>
+                  this.setState({
+                    xTabTwo: event.nativeEvent.layout.x
+                  })
+                }
+                onPress={() =>
+                  this.setState({ active: 1 }, () => this.handleSlide(115))
+                }
+              >
+                <Text
+                  style={{
+                    fontSize: 14,
+                    marginTop: 7,
+                    fontWeight: "700",
+                    color: active === 1 ? "#e0281a" : "#9e9897"
+                  }}
+                >
+                  DISCOVER
+                </Text>
+              </TouchableOpacity>
+            </HeaderMiddle>
+            <View style={{ marginRight: 15 }}>
+              <Ionicons
+                name={"ios-search"}
+                size={30}
+                color={"rgba(0,0,0,0.7)"}
+                onPress={() => this.props.navigation.navigate("Search")}
+              />
+            </View>
+          </Header>
+          <View style={{ backgroundColor: "white", width: SCREEN_WIDTH }}>
+            <Animated.View
+              style={{
+                width: 10,
+                height: 10,
+                left: "35%",
+                backgroundColor: "#007aff",
+
+                transform: [
+                  {
+                    translateX
+                  }
+                ]
+              }}
+            />
+          </View>
+          <View
+            style={{
+              height: 3,
+              width: SCREEN_WIDTH,
+              backgroundColor: "rgba(0,0,0,0.25)"
+            }}
+          />
+        </View>
 
         <Animated.View
           style={{
+            paddingTop: 43,
+            zIndex: 2000,
             transform: [
               {
                 translateX: translateXTabOne
@@ -652,7 +663,7 @@ class HomeScreen extends React.Component<IProps, IState> {
                 onPress={() => this.openImage(index)}
                 key={image.id}
               >
-                <Animated.View
+                <View
                   style={{
                     width: SCREEN_WIDTH,
                     paddingTop: 30,
@@ -676,7 +687,7 @@ class HomeScreen extends React.Component<IProps, IState> {
                     </View>
                     <HasgTags>#봄바람스멜 #옥땅으로 따라와</HasgTags>
                   </HeaderTitles>
-                </Animated.View>
+                </View>
               </TouchableWithoutFeedback>
             ))}
           </ScrollView>
@@ -804,8 +815,11 @@ class HomeScreen extends React.Component<IProps, IState> {
           )}
         </Animated.View>
 
-        <Animated.View
+        <Animated.ScrollView
+          bounces={false}
           style={{
+            marginTop: 40,
+            zIndex: 1800,
             transform: [
               {
                 translateX: translateXTabTwo
@@ -817,7 +831,7 @@ class HomeScreen extends React.Component<IProps, IState> {
           }}
         >
           <Discover navigation={this.props.navigation} />
-        </Animated.View>
+        </Animated.ScrollView>
       </SafeAreaView>
     );
   }

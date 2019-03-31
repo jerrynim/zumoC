@@ -17,7 +17,7 @@ export const HeaderMiddle = styled.View`
 export const PageHeader = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  padding-top: 40px;
+  padding-top: 0px;
 `;
 export const Title = styled.Text`
   color: white;
@@ -55,6 +55,7 @@ export const Weather = styled.View`
 `;
 
 export const Header = styled.View`
+  background-color: white;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
