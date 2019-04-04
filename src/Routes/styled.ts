@@ -1,4 +1,7 @@
 import styled from "styled-components/native";
+import { Dimensions } from "react-native";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export const SubTitle = styled.Text`
   color: white;
@@ -65,4 +68,28 @@ export const PageHeaderTitles = styled.View`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+`;
+
+export const CategoryItem = styled.View`
+  flex: 1;
+  width: ${SCREEN_WIDTH / 3};
+  height: 70;
+  border-color: rgba(0, 0, 0, 0.3);
+  border-width: 1;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Category = styled.Text`
+  font-weight: 900;
+  font-size: 10;
+  color: white;
+  text-shadow: 0px 0.5px 1px;
+`;
+
+export const HCategory = styled.Text`
+  font-size: 25;
+  font-weight: 400;
+  color: white;
+  text-shadow: 0px 0.5px 1px;
 `;

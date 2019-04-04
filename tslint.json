@@ -1,53 +1,16 @@
 {
+  "extends": ["tslint:recommended", "tslint-react", "tslint-config-prettier"],
   "rules": {
-    "member-access": false,
-
-    "no-any": false,
-    "no-inferrable-types": [false],
-    "no-internal-module": true,
-    "no-var-requires": true,
-    "typedef": [false],
-    "ban": false,
-    "curly": false,
-    "forin": true,
-    "label-position": true,
-    "no-arg": true,
-    "no-bitwise": true,
-    "no-conditional-assignment": true,
-    "no-console": [true, "debug", "info", "time", "timeEnd", "trace"],
-    "no-construct": true,
-    "no-debugger": true,
-    "no-duplicate-variable": true,
-    "no-eval": true,
-    "no-shadowed-variable": true,
-    "no-string-literal": true,
-    "no-switch-case-fall-through": true,
-    "no-unused-expression": true,
-    "no-var-keyword": true,
-    "radix": true,
-    "switch-default": true,
-    "triple-equals": [true, "allow-undefined-check"],
-    "eofline": false,
-    "indent": [true, "spaces"],
-    "no-require-imports": false,
-    "object-literal-sort-keys": false,
-
-    "align": [true],
-    "class-name": true,
-    "comment-format": [true, "check-space"],
-    "interface-name": [false],
-    "jsdoc-format": true,
-    "no-parameter-properties": false,
-    "one-line": [
-      true,
-      "check-open-brace",
-      "check-catch",
-      "check-else",
-      "check-finally"
-    ],
-    "variable-name": [true, "allow-leading-underscore", "ban-keywords"]
+    "max-classes-per-file": false,
+    "jsx-no-lambda": false,
+    "no-console": false
   },
   "linterOptions": {
-    "exclude": ["/node_modules", "/tslint.json", "node_modules"]
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js",
+      "src/countries.ts"
+    ]
   }
 }

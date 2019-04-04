@@ -830,7 +830,11 @@ class HomeScreen extends React.Component<IProps, IState> {
             ]
           }}
         >
-          <Discover navigation={this.props.navigation} />
+          <Discover
+            navigation={this.props.navigation}
+            Week={Week}
+            Date={Date}
+          />
         </Animated.ScrollView>
       </SafeAreaView>
     );

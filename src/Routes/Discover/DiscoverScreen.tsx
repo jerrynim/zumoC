@@ -4,44 +4,19 @@ import {
   Text,
   Dimensions,
   ScrollView,
-  StyleSheet,
   ImageBackground
 } from "react-native";
 
 import { NavigationScreenProp } from "react-navigation";
 import { DiscoverImages } from "./images";
-import styled from "styled-components/native";
+import { CategoryItem, Category, HCategory } from "../styled";
 interface IProps {
   navigation: NavigationScreenProp<any, any>;
+  Week: String;
+  Date: String;
 }
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
-
-const style = StyleSheet.create({
-  category: {
-    flex: 1,
-    width: SCREEN_WIDTH / 3,
-    height: 70,
-    borderColor: "rgba(0,0,0,0.3)",
-    borderWidth: 1,
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
-
-const Category = styled.Text`
-  font-weight: 900;
-  font-size: 10;
-  color: white;
-  text-shadow: 0px 0.5px 1px;
-`;
-
-const HCategory = styled.Text`
-  font-size: 25;
-  font-weight: 400;
-  color: white;
-  text-shadow: 0px 0.5px 1px;
-`;
 
 class DiscoverScreen extends React.Component<IProps> {
   render() {
@@ -50,7 +25,9 @@ class DiscoverScreen extends React.Component<IProps> {
         <View style={{ margin: 10 }}>
           <View style={{ paddingBottom: 10 }}>
             <Text style={{ fontSize: 25 }}>3월 2주 ZUMO추천</Text>
-            <Text>03.04 - 03.10</Text>
+            <Text>
+              {this.props.Date} - {this.props.Week}
+            </Text>
           </View>
           <View
             style={{
@@ -259,37 +236,37 @@ class DiscoverScreen extends React.Component<IProps> {
           </Text>
           <View style={{ flexDirection: "column", marginTop: 15 }}>
             <View style={{ flexDirection: "row" }}>
-              <View style={style.category}>
+              <CategoryItem>
                 <Text>푸드</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>축제</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>플레이스</Text>
-              </View>
+              </CategoryItem>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <View style={style.category}>
+              <CategoryItem>
                 <Text>스포츠 레저</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>컬쳐</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>힐링</Text>
-              </View>
+              </CategoryItem>
             </View>
             <View style={{ flexDirection: "row" }}>
-              <View style={style.category}>
+              <CategoryItem>
                 <Text>패션 뷰티</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>리빙</Text>
-              </View>
-              <View style={style.category}>
+              </CategoryItem>
+              <CategoryItem>
                 <Text>취미</Text>
-              </View>
+              </CategoryItem>
             </View>
           </View>
         </View>
