@@ -1,11 +1,13 @@
+import { AsyncStorage } from "react-native";
+
 export const defaults = {
-  isLoggedIn: localStorage.getItem("token") !== null ? true : false
+  isLoggedIn: AsyncStorage.getItem("token") !== null ? true : false
 };
 
 export const resolvers = {
   Mutation: {
     logUserIn: (_, { token }, { cache }) => {
-      localStorage.setItem("token", token);
+      AsyncStorage.setItem("token", token);
       cache.writeData({
         data: {
           isLoggedIn: true
@@ -14,7 +16,7 @@ export const resolvers = {
       return null;
     },
     logUserOut: (_, __) => {
-      localStorage.removeItem("token");
+      AsyncStorage.removeItem("token");
       return null;
     }
   }
