@@ -3,3 +3,5 @@
 React Native , typescript, Animation, Navigation
 
 wheather(날씨), 미세먼지, 날씨예보, 날자(moment.js)
+
+demo : https://www.youtube.com/watch?v=exxa2tNblwc
