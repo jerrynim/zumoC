@@ -4,8 +4,7 @@ import {
   createDrawerNavigator,
   createAppContainer,
   createStackNavigator,
-  DrawerItemsProps,
-  createSwitchNavigator
+  DrawerItemsProps
 } from "react-navigation";
 import HomeScreen from "../Home";
 import DiscoverScreen from "../Discover";
@@ -17,9 +16,6 @@ import Menu from "../../components/Menu";
 import Page from "../Page";
 import { ApolloProvider } from "react-apollo-hooks";
 import Client from "../../Apollo/Client";
-import MailScreen from "../Mail";
-import AuthScreen from "../Auth";
-import AuthLoadingScreen from "../AuthLoading/AuthLoadingScreen";
 
 class DrawerComponent extends React.Component<DrawerItemsProps> {
   constructor(props: DrawerItemsProps) {
@@ -84,23 +80,7 @@ const MyDrawerNavigator = createDrawerNavigator(
   }
 );
 
-const AuthNavigator = createSwitchNavigator({
-  AuthLoading: {
-    screen: AuthLoadingScreen
-  },
-  Auth: {
-    screen: AuthScreen
-  },
-  Mail: {
-    screen: MailScreen
-  },
-  Main: {
-    screen: MyDrawerNavigator
-  },
-  initialRouteName: "AuthLoadingScreen"
-});
-
-const AppPresenter = createAppContainer(AuthNavigator);
+const AppPresenter = createAppContainer(MyDrawerNavigator);
 
 class AppContainer extends React.Component {
   render() {
